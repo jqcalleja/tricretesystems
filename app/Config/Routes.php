@@ -3,5 +3,41 @@
 use CodeIgniter\Router\RouteCollection;
 
 /** @var RouteCollection $routes */
-$routes->get('/','Dashboard::index');
+
+// Dashboard
+$routes->get('/',          'Dashboard::index');
 $routes->get('/dashboard', 'Dashboard::index');
+
+// Employees
+$routes->get('/employees',                          'Employees::index');
+$routes->get('/employees/create',                   'Employees::create');
+$routes->post('/employees/store',                    'Employees::store');
+$routes->get('/employees/view/(:num)',               'Employees::view/$1');
+$routes->get('/employees/edit/(:num)',               'Employees::edit/$1');
+$routes->post('/employees/update/(:num)',             'Employees::update/$1');
+$routes->get('/employees/toggle-status/(:num)',      'Employees::toggleStatus/$1');
+
+// Emergency Contacts
+$routes->post('/employees/(:num)/emergency/store',              'Employees::storeEmergency/$1');
+$routes->post('/employees/(:num)/emergency/update/(:num)',      'Employees::updateEmergency/$1/$2');
+$routes->get('/employees/(:num)/emergency/delete/(:num)',      'Employees::deleteEmergency/$1/$2');
+
+// Children
+$routes->post('/employees/(:num)/child/store',                  'Employees::storeChild/$1');
+$routes->post('/employees/(:num)/child/update/(:num)',          'Employees::updateChild/$1/$2');
+$routes->get('/employees/(:num)/child/delete/(:num)',          'Employees::deleteChild/$1/$2');
+
+// Education
+$routes->post('/employees/(:num)/education/store',              'Employees::storeEducation/$1');
+$routes->post('/employees/(:num)/education/update/(:num)',      'Employees::updateEducation/$1/$2');
+$routes->get('/employees/(:num)/education/delete/(:num)',      'Employees::deleteEducation/$1/$2');
+
+// Employment History
+$routes->post('/employees/(:num)/history/store',                'Employees::storeHistory/$1');
+$routes->post('/employees/(:num)/history/update/(:num)',        'Employees::updateHistory/$1/$2');
+$routes->get('/employees/(:num)/history/delete/(:num)',        'Employees::deleteHistory/$1/$2');
+
+// Character References
+$routes->post('/employees/(:num)/reference/store',              'Employees::storeReference/$1');
+$routes->post('/employees/(:num)/reference/update/(:num)',      'Employees::updateReference/$1/$2');
+$routes->get('/employees/(:num)/reference/delete/(:num)',      'Employees::deleteReference/$1/$2');
