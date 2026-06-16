@@ -19,7 +19,7 @@
 <!-- ── Stat Cards ── -->
 <div class="row g-3 mb-4">
     <div class="col-6 col-md-4 col-lg-2">
-        <div class="ts-stat-card">
+        <div class="ts-stat-card h-100">
             <div class="ts-stat-icon green">
                 <?= svg_icon('employees', '', '22') ?>
             </div>
@@ -30,7 +30,7 @@
         </div>
     </div>
     <div class="col-6 col-md-4 col-lg-2">
-        <div class="ts-stat-card">
+        <div class="ts-stat-card h-100">
             <div class="ts-stat-icon gray" style="background:#F3F4F6;color:#6B7280;">
                 <?= svg_icon('employees', '', '22') ?>
             </div>
@@ -41,7 +41,7 @@
         </div>
     </div>
     <div class="col-6 col-md-4 col-lg-2">
-        <div class="ts-stat-card">
+        <div class="ts-stat-card h-100">
             <div class="ts-stat-icon blue">
                 <?= svg_icon('check', '', '22') ?>
             </div>
@@ -52,7 +52,7 @@
         </div>
     </div>
     <div class="col-6 col-md-4 col-lg-2">
-        <div class="ts-stat-card">
+        <div class="ts-stat-card h-100">
             <div class="ts-stat-icon red">
                 <?= svg_icon('x', '', '22') ?>
             </div>
@@ -63,7 +63,7 @@
         </div>
     </div>
     <div class="col-6 col-md-4 col-lg-2">
-        <div class="ts-stat-card">
+        <div class="ts-stat-card h-100">
             <div class="ts-stat-icon amber">
                 <?= svg_icon('projects', '', '22') ?>
             </div>
@@ -74,7 +74,7 @@
         </div>
     </div>
     <div class="col-6 col-md-4 col-lg-2">
-        <div class="ts-stat-card">
+        <div class="ts-stat-card h-100">
             <div class="ts-stat-icon teal">
                 <?= svg_icon('employees', '', '22') ?>
             </div>
@@ -90,7 +90,7 @@
 <div class="row g-3 mb-3">
 
     <div class="col-12 col-lg-7">
-        <div class="ts-card h-100 mb-0">
+        <div class="ts-card h-100 mb-0 h-100">
             <div class="ts-card-header">
                 <h6 class="ts-card-title">
                     <?= svg_icon('chart-bar', 'text-green', '16') ?>
@@ -102,7 +102,7 @@
     </div>
 
     <div class="col-12 col-lg-5">
-        <div class="ts-card h-100 mb-0">
+        <div class="ts-card h-100 mb-0 h-100">
             <div class="ts-card-header">
                 <h6 class="ts-card-title">
                     <?= svg_icon('projects', 'text-green', '16') ?>
@@ -155,7 +155,7 @@
 <div class="row g-3">
 
     <div class="col-12 col-lg-7">
-        <div class="ts-card mb-0">
+        <div class="ts-card mb-0 h-100">
             <div class="ts-card-header">
                 <h6 class="ts-card-title">
                     <?= svg_icon('clock', 'text-green', '16') ?>
@@ -234,7 +234,7 @@
     </div>
 
     <div class="col-12 col-lg-5">
-        <div class="ts-card mb-0">
+        <div class="ts-card mb-0 h-100">
             <div class="ts-card-header">
                 <h6 class="ts-card-title">
                     <?= svg_icon('employees', 'text-green', '16') ?>

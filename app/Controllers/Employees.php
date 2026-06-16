@@ -39,12 +39,14 @@ class Employees extends BaseController
     // ============================================================
     public function index(): string
     {
+        $statusParam = $this->request->getGet('status');
+
         $filters = [
             'search'            => $this->request->getGet('search'),
             'department_id'     => $this->request->getGet('department_id'),
             'employment_status' => $this->request->getGet('employment_status'),
-            'is_active'         => $this->request->getGet('status') !== null
-                ? (int) $this->request->getGet('status')
+            'is_active'         => ($statusParam !== null && $statusParam !== '')
+                ? (int) $statusParam
                 : null,
         ];
 
@@ -80,6 +82,9 @@ class Employees extends BaseController
         }
 
         $data = $this->request->getPost($this->employeeModel->allowedFields);
+
+        // Explicitly set is_active — never rely on form input or DB default
+        $data['is_active'] = 1;
 
         // Handle photo upload
         $photo = $this->request->getFile('photo');

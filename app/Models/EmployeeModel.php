@@ -103,7 +103,7 @@ class EmployeeModel extends Model
             ->join('positions p',   'p.id = e.position_id',   'left')
             ->join('departments d', 'd.id = e.department_id', 'left');
 
-        if (isset($filters['is_active'])) {
+        if (isset($filters['is_active']) && $filters['is_active'] !== null) {
             $builder->where('e.is_active', $filters['is_active']);
         }
 

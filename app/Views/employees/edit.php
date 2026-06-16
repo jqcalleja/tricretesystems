@@ -143,7 +143,7 @@
                             style="width:100px;height:100px;object-fit:cover;border:2px solid var(--ts-border);">
                     <?php else: ?>
                         <img id="photoPreview"
-                            src="<?= base_url('assets/images/default-avatar.png') ?>"
+                            src="<?= base_url('assets/images/default-avatar.jpg') ?>"
                             class="rounded"
                             style="width:100px;height:100px;object-fit:cover;border:2px solid var(--ts-border);">
                     <?php endif; ?>

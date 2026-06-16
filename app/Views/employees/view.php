@@ -21,7 +21,7 @@ $statusColor = [
                         border:3px solid var(--ts-green-light);">
         <?php else: ?>
             <div class="ts-avatar lg">
-                <?= strtoupper(substr($employee['first_name'], 0, 1)) ?>
+                <?= strtoupper(substr($employee['first_name'], 0, 1).substr($employee['last_name'], 0, 1)) ?>
             </div>
         <?php endif; ?>
         <div>

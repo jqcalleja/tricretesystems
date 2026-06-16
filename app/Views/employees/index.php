@@ -105,7 +105,7 @@
             <p>No employees found.</p>
         </div>
     <?php else: ?>
-        <div class="ts-table-wrap">
+        <div class="ts-table-wrap px-3 py-2">
             <table class="ts-table" id="employeeTable">
                 <thead>
                     <tr>
@@ -130,7 +130,7 @@
                                             alt="<?= esc($emp['first_name']) ?>">
                                     <?php else: ?>
                                         <div class="ts-avatar">
-                                            <?= strtoupper(substr($emp['first_name'], 0, 1)) ?>
+                                            <?= strtoupper(substr($emp['first_name'], 0, 1)).strtoupper(substr($emp['last_name'], 0, 1)) ?>
                                         </div>
                                     <?php endif; ?>
                                     <div>
