@@ -1,3 +1,14 @@
+<?php
+/** 
+ * @var array $employee
+ * @var array $emergency
+ * @var array $education
+ * @var array $references
+ * @var array $children
+ * @var array $history
+ * @var int $age
+ */
+?>
 <?= $this->extend('layouts/main') ?>
 <?= $this->section('content') ?>
 

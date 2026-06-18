@@ -1,3 +1,11 @@
+<?php
+/**
+ * @var string $employee_no
+ * @var array $positions
+ * @var array $departments
+ */
+?>
+
 <?= $this->extend('layouts/main') ?>
 <?= $this->section('content') ?>
 

@@ -1,3 +1,17 @@
+<?php
+/**
+ * @var int $totalActive
+ * @var int $totalInactive
+ * @var int $presentToday
+ * @var int $absentToday
+ * @var int $activeProjects
+ * @var int $totalManpower
+ * @var int $trendDays
+ * @var int $trendPresent
+ * @var int $trendAbsent
+ */
+?>
+
 <?= $this->extend('layouts/main') ?>
 
 <?= $this->section('content') ?>
