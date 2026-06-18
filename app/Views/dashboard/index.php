@@ -1,18 +1,21 @@
+<?= $this->extend('layouts/main') ?>
+
 <?php
 /**
- * @var int $totalActive
- * @var int $totalInactive
- * @var int $presentToday
- * @var int $absentToday
- * @var int $activeProjects
- * @var int $totalManpower
- * @var int $trendDays
- * @var int $trendPresent
- * @var int $trendAbsent
+ * @var int    $totalActive       Count of active employees
+ * @var int    $totalInactive     Count of inactive employees
+ * @var int    $presentToday      Count of employees present today
+ * @var int    $absentToday       Count of employees absent today
+ * @var int    $activeProjects    Count of active projects
+ * @var int    $totalManpower     Count of active project assignments
+ * @var array  $recentAttendance  Today's attendance records (joined w/ employee + project)
+ * @var array  $projectSummary    Active projects with manpower count
+ * @var array  $recentEmployees   Last 5 employees added
+ * @var string $trendDays         JSON-encoded array of day labels (last 7 days)
+ * @var string $trendPresent      JSON-encoded array of present counts (last 7 days)
+ * @var string $trendAbsent       JSON-encoded array of absent counts (last 7 days)
  */
 ?>
-
-<?= $this->extend('layouts/main') ?>
 
 <?= $this->section('content') ?>
 
@@ -268,7 +271,7 @@
             <?php else: ?>
                 <?php
                 $statusColor = [
-                    'Regular'       => 'primary',
+                    'Regular'       => 'statusgreen',
                     'Probationary'  => 'amber',
                     'Project-Based' => 'blue',
                     'Casual'        => 'gray',

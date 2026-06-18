@@ -1,11 +1,13 @@
+<?= $this->extend('layouts/main') ?>
+
 <?php
 /**
- * @var array $employees
- * @var array $departments
+ * @var array $employees    List of employees (joined w/ position + department)
+ * @var array $departments  All departments for the filter dropdown
+ * @var array $filters      Current filter values (search, department_id, employment_status, is_active)
  */
 ?>
 
-<?= $this->extend('layouts/main') ?>
 <?= $this->section('content') ?>
 
 <!-- Page Header -->
@@ -166,7 +168,7 @@
                             <td>
                                 <?php
                                 $statusColor = [
-                                    'Regular'       => 'primary',
+                                    'Regular'       => 'statusgreen',
                                     'Probationary'  => 'amber',
                                     'Project-Based' => 'blue',
                                     'Casual'        => 'gray',

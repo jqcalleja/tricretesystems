@@ -12,6 +12,7 @@ class EmployeeModel extends Model
     protected $useTimestamps = true;
     protected $createdField  = 'created_at';
     protected $updatedField  = 'updated_at';
+    protected $skipValidation = true;
 
     protected $allowedFields = [
         'employee_no',
@@ -57,7 +58,7 @@ class EmployeeModel extends Model
         'special_skills',
     ];
 
-    protected $validationRules = [
+    public $validationRules = [
         'employee_no'       => 'required|max_length[20]|is_unique[employees.employee_no,id,{id}]',
         'last_name'         => 'required|max_length[80]',
         'first_name'        => 'required|max_length[80]',

@@ -9,8 +9,26 @@ use App\Models\ProjectAssignmentModel;
 
 class Dashboard extends BaseController
 {
+    /**
+     * Display the main dashboard with HR summary stats and recent activity.
+     *
+     * @return string Rendered dashboard view with:
+     *                 @var int    $totalActive
+     *                 @var int    $totalInactive
+     *                 @var int    $presentToday
+     *                 @var int    $absentToday
+     *                 @var int    $activeProjects
+     *                 @var int    $totalManpower
+     *                 @var array  $recentAttendance
+     *                 @var array  $projectSummary
+     *                 @var array  $recentEmployees
+     *                 @var string $trendDays
+     *                 @var string $trendPresent
+     *                 @var string $trendAbsent
+     */
+
     public function index(): string
-    {
+    {   
         $employeeModel   = new EmployeeModel();
         $attendanceModel = new AttendanceModel();
         $projectModel    = new ProjectModel();

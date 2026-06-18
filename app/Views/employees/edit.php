@@ -1,12 +1,13 @@
+<?= $this->extend('layouts/main') ?>
+
 <?php
 /**
- * @var array $employee
- * @var array $positions
- * @var array $departments
+ * @var array $employee     Employee record being edited
+ * @var array $departments  All departments for the dropdown
+ * @var array $positions    All positions for the dropdown
  */
 ?>
 
-<?= $this->extend('layouts/main') ?>
 <?= $this->section('content') ?>
 
 <div class="ts-page-header">

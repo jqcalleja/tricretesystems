@@ -746,6 +746,16 @@ a:hover {
     color: #0F766E;
 }
 
+.ts-badge.statusgreen {
+    background: #EAF6EC;
+    color: #15803D;
+}
+
+.ts-stat-icon.statusgreen {
+    background: #EAF6EC;
+    color: #15803D;
+}
+
 /* ============================================================
    BUTTONS
    ============================================================ */

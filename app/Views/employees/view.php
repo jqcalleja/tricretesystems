@@ -1,20 +1,22 @@
+<?= $this->extend('layouts/main') ?>
+
 <?php
-/** 
- * @var array $employee
- * @var array $emergency
- * @var array $education
- * @var array $references
- * @var array $children
- * @var array $history
- * @var int $age
+/**
+ * @var array $employee    Employee record with joined position/department names
+ * @var int    $age        Calculated age from date_of_birth
+ * @var array $emergency   Emergency contacts for this employee
+ * @var array $children    Children records for this employee
+ * @var array $education   Educational background records
+ * @var array $history     Employment history records
+ * @var array $references  Character reference records
  */
 ?>
-<?= $this->extend('layouts/main') ?>
+
 <?= $this->section('content') ?>
 
 <?php
 $statusColor = [
-    'Regular'       => 'green',
+    'Regular'       => 'statusgreen',
     'Probationary'  => 'amber',
     'Project-Based' => 'blue',
     'Casual'        => 'gray',

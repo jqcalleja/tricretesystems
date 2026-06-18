@@ -37,6 +37,14 @@ class Employees extends BaseController
     // ============================================================
     // LIST
     // ============================================================
+    /**
+     * Display the employee list with filters.
+     *
+     * @return string Rendered view with:
+     *                 @var array $employees
+     *                 @var array $departments
+     *                 @var array $filters
+     */
     public function index(): string
     {
         $statusParam = $this->request->getGet('status');
@@ -61,6 +69,14 @@ class Employees extends BaseController
     // ============================================================
     // CREATE
     // ============================================================
+    /**
+     * Display the add employee form.
+     *
+     * @return string Rendered view with:
+     *                 @var array  $departments
+     *                 @var array  $positions
+     *                 @var string $employee_no
+     */
     public function create(): string
     {
         return view('employees/create', [
@@ -82,6 +98,13 @@ class Employees extends BaseController
         }
 
         $data = $this->request->getPost($this->employeeModel->allowedFields);
+        $data = $this->uppercaseFields($data, [
+            'email_address',
+            'gender',
+            'civil_status',
+            'employment_status',
+            'rate_type',
+        ]);
 
         // Explicitly set is_active — never rely on form input or DB default
         $data['is_active'] = 1;
@@ -90,7 +113,7 @@ class Employees extends BaseController
         $photo = $this->request->getFile('photo');
         if ($photo && $photo->isValid() && ! $photo->hasMoved()) {
             $newName = $photo->getRandomName();
-            $photo->move(FCPATH . 'public/assets/images/uploads/employees', $newName);
+            $photo->move(FCPATH . 'assets/images/uploads/employees', $newName);
             $data['photo'] = $newName;
         }
 
@@ -103,6 +126,19 @@ class Employees extends BaseController
     // ============================================================
     // VIEW / PROFILE
     // ============================================================
+    /**
+     * Display the employee profile with all related records.
+     *
+     * @param int $id Employee ID
+     * @return string Rendered view with:
+     *                 @var array $employee
+     *                 @var int   $age
+     *                 @var array $emergency
+     *                 @var array $children
+     *                 @var array $education
+     *                 @var array $history
+     *                 @var array $references
+     */
     public function view(int $id): string
     {
         $employee = $this->employeeModel->getWithDetails($id);
@@ -128,6 +164,15 @@ class Employees extends BaseController
     // ============================================================
     // EDIT
     // ============================================================
+    /**
+     * Display the edit employee form.
+     *
+     * @param int $id Employee ID
+     * @return string Rendered view with:
+     *                 @var array $employee
+     *                 @var array $departments
+     *                 @var array $positions
+     */
     public function edit(int $id): string
     {
         $employee = $this->employeeModel->find($id);
@@ -146,6 +191,11 @@ class Employees extends BaseController
         ]);
     }
 
+    /**
+     * Update an existing employee record.
+     *
+     * @param int $id Employee ID
+     */
     public function update(int $id)
     {
         $employee = $this->employeeModel->find($id);
@@ -158,6 +208,12 @@ class Employees extends BaseController
 
         $rules = $this->employeeModel->validationRules;
 
+        // Manually substitute {id} since we're not using $model->save()'s built-in validation
+        $rules['employee_no'] = str_replace('{id}', (string) $id, $rules['employee_no']);
+
+        // TEMPORARY DEBUG
+        log_message('debug', 'Employee_no rule being used: ' . $rules['employee_no']);
+
         if (! $this->validate($rules)) {
             return redirect()->back()
                 ->withInput()
@@ -165,23 +221,37 @@ class Employees extends BaseController
         }
 
         $data = $this->request->getPost($this->employeeModel->allowedFields);
+        $data = $this->uppercaseFields($data, [
+            'email_address',
+            'gender',
+            'civil_status',
+            'employment_status',
+            'rate_type',
+        ]);
 
         // Handle photo upload
         $photo = $this->request->getFile('photo');
         if ($photo && $photo->isValid() && ! $photo->hasMoved()) {
             // Delete old photo
             if ($employee['photo']) {
-                $oldPath = FCPATH . 'public/assets/images/uploads/employees/' . $employee['photo'];
+                $oldPath = FCPATH . 'assets/images/uploads/employees/' . $employee['photo'];
                 if (file_exists($oldPath)) unlink($oldPath);
             }
             $newName = $photo->getRandomName();
-            $photo->move(FCPATH . 'public/assets/images/uploads/employees', $newName);
+            $photo->move(FCPATH . 'assets/images/uploads/employees', $newName);
             $data['photo'] = $newName;
         } else {
             unset($data['photo']);
         }
 
-        $this->employeeModel->update($id, $data);
+        $result = $this->employeeModel->update($id, $data);
+
+        if (! $result) {
+            log_message('error', 'Employee update failed for ID ' . $id . ': ' . json_encode($this->employeeModel->errors()));
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Failed to update employee. ' . implode(' ', $this->employeeModel->errors() ?? []));
+        }
 
         return redirect()->to("/employees/view/{$id}")
             ->with('success', 'Employee updated successfully.');

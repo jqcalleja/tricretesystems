@@ -1,12 +1,13 @@
+<?= $this->extend('layouts/main') ?>
+
 <?php
 /**
- * @var string $employee_no
- * @var array $positions
- * @var array $departments
+ * @var array  $departments  All departments for the dropdown
+ * @var array  $positions    All positions for the dropdown
+ * @var string $employee_no  Auto-generated next employee ID number
  */
 ?>
 
-<?= $this->extend('layouts/main') ?>
 <?= $this->section('content') ?>
 
 <!-- Page Header -->
