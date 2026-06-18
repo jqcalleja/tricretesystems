@@ -243,15 +243,97 @@
     <div class="ts-card">
         <p class="ts-section-title">Address &amp; Contact</p>
         <div class="row g-3">
-            <div class="col-12 col-md-6">
+            <!-- City Address Group -->
+            <div class="col-12">
                 <label class="ts-form-label">City Address</label>
-                <textarea name="city_address" class="form-control form-control-sm"
-                    rows="2"><?= esc(old('city_address', $employee['city_address'])) ?></textarea>
+                <div class="row g-2">
+                    <div class="col-12 col-sm-4">
+                        <div class="ts-address-group-label">Province</div>
+                        <div class="ts-combo-wrap">
+                            <input type="text" id="city_address_province_input"
+                                class="form-control form-control-sm"
+                                placeholder="Type or select province" autocomplete="off">
+                            <div id="city_address_province_list" class="ts-combo-list"></div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-4">
+                        <div class="ts-address-group-label">City / Municipality</div>
+                        <div class="ts-combo-wrap">
+                            <input type="text" id="city_address_city_input"
+                                class="form-control form-control-sm" disabled
+                                placeholder="Select province first" autocomplete="off">
+                            <div id="city_address_city_list" class="ts-combo-list"></div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-4">
+                        <div class="ts-address-group-label">Barangay</div>
+                        <div class="ts-combo-wrap">
+                            <input type="text" id="city_address_barangay_input"
+                                class="form-control form-control-sm" disabled
+                                placeholder="Select city first" autocomplete="off">
+                            <div id="city_address_barangay_list" class="ts-combo-list"></div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="ts-address-group-label">House No. / Street / Subdivision</div>
+                        <input type="text" id="city_address_street_input"
+                            class="form-control form-control-sm"
+                            placeholder="e.g. 123 Mabini St., Greenview Subd.">
+                    </div>
+                </div>
+                <!-- Hidden field that holds the final concatenated address string for form submission -->
+                <input type="hidden" name="city_address" id="city_address">
             </div>
-            <div class="col-12 col-md-6">
+
+            <!-- Same as City Address checkbox -->
+            <div class="col-12">
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="same_as_city_address">
+                    <label class="form-check-label" for="same_as_city_address" style="font-size:13px;">
+                        Provincial Address is the same as City Address
+                    </label>
+                </div>
+            </div>
+
+            <!-- Provincial Address Group -->
+            <div class="col-12" id="provincial_address_fieldset">
                 <label class="ts-form-label">Provincial Address</label>
-                <textarea name="provincial_address" class="form-control form-control-sm"
-                    rows="2"><?= esc(old('provincial_address', $employee['provincial_address'])) ?></textarea>
+                <div class="row g-2">
+                    <div class="col-12 col-sm-4">
+                        <div class="ts-address-group-label">Province</div>
+                        <div class="ts-combo-wrap">
+                            <input type="text" id="provincial_address_province_input"
+                                class="form-control form-control-sm"
+                                placeholder="Type or select province" autocomplete="off">
+                            <div id="provincial_address_province_list" class="ts-combo-list"></div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-4">
+                        <div class="ts-address-group-label">City / Municipality</div>
+                        <div class="ts-combo-wrap">
+                            <input type="text" id="provincial_address_city_input"
+                                class="form-control form-control-sm" disabled
+                                placeholder="Select province first" autocomplete="off">
+                            <div id="provincial_address_city_list" class="ts-combo-list"></div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-4">
+                        <div class="ts-address-group-label">Barangay</div>
+                        <div class="ts-combo-wrap">
+                            <input type="text" id="provincial_address_barangay_input"
+                                class="form-control form-control-sm" disabled
+                                placeholder="Select city first" autocomplete="off">
+                            <div id="provincial_address_barangay_list" class="ts-combo-list"></div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="ts-address-group-label">House No. / Street / Subdivision</div>
+                        <input type="text" id="provincial_address_street_input"
+                            class="form-control form-control-sm"
+                            placeholder="e.g. Purok 3, Brgy. Centro">
+                    </div>
+                </div>
+                <input type="hidden" name="provincial_address" id="provincial_address">
             </div>
             <div class="col-12 col-sm-6 col-md-4">
                 <label class="ts-form-label">Contact Number</label>
@@ -275,24 +357,67 @@
             <div class="col-12 col-sm-6 col-md-4">
                 <label class="ts-form-label">Name of Spouse</label>
                 <input type="text" name="spouse_name" class="form-control form-control-sm"
-                    value="<?= esc(old('spouse_name', $employee['spouse_name'])) ?>">
+                    value="<?= esc(old('spouse_name')) ?>">
             </div>
             <div class="col-12 col-sm-6 col-md-4">
                 <label class="ts-form-label">Occupation</label>
-                <input type="text" name="spouse_occupation"
-                    class="form-control form-control-sm"
-                    value="<?= esc(old('spouse_occupation', $employee['spouse_occupation'])) ?>">
+                <input type="text" name="spouse_occupation" class="form-control form-control-sm"
+                    value="<?= esc(old('spouse_occupation')) ?>">
             </div>
             <div class="col-12 col-sm-6 col-md-4">
                 <label class="ts-form-label">Contact Number</label>
                 <input type="text" name="spouse_contact_number"
                     class="form-control form-control-sm"
-                    value="<?= esc(old('spouse_contact_number', $employee['spouse_contact_number'])) ?>">
+                    value="<?= esc(old('spouse_contact_number')) ?>">
             </div>
+
+            <!-- Spouse Address Group -->
+            <?php if (!empty($employee['spouse_address'])): ?>
+                <div class="col-12">
+                    <div class="alert alert-secondary py-2 mb-2" style="font-size:12.5px;">
+                        <strong>Current saved address:</strong> <?= esc($employee['spouse_address']) ?>
+                        <br><span class="text-muted-sm">Re-select below only if you need to update it.</span>
+                    </div>
+                </div>
+            <?php endif; ?>
             <div class="col-12">
                 <label class="ts-form-label">Address</label>
-                <textarea name="spouse_address" class="form-control form-control-sm"
-                    rows="2"><?= esc(old('spouse_address', $employee['spouse_address'])) ?></textarea>
+                <div class="row g-2">
+                    <div class="col-12 col-sm-4">
+                        <div class="ts-address-group-label">Province</div>
+                        <div class="ts-combo-wrap">
+                            <input type="text" id="spouse_address_province_input"
+                                class="form-control form-control-sm"
+                                placeholder="Type or select province" autocomplete="off">
+                            <div id="spouse_address_province_list" class="ts-combo-list"></div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-4">
+                        <div class="ts-address-group-label">City / Municipality</div>
+                        <div class="ts-combo-wrap">
+                            <input type="text" id="spouse_address_city_input"
+                                class="form-control form-control-sm" disabled
+                                placeholder="Select province first" autocomplete="off">
+                            <div id="spouse_address_city_list" class="ts-combo-list"></div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-4">
+                        <div class="ts-address-group-label">Barangay</div>
+                        <div class="ts-combo-wrap">
+                            <input type="text" id="spouse_address_barangay_input"
+                                class="form-control form-control-sm" disabled
+                                placeholder="Select city first" autocomplete="off">
+                            <div id="spouse_address_barangay_list" class="ts-combo-list"></div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="ts-address-group-label">House No. / Street / Subdivision</div>
+                        <input type="text" id="spouse_address_street_input"
+                            class="form-control form-control-sm"
+                            placeholder="e.g. 123 Mabini St.">
+                    </div>
+                </div>
+                <input type="hidden" name="spouse_address" id="spouse_address">
             </div>
         </div>
     </div>
@@ -301,32 +426,76 @@
     <div class="ts-card">
         <p class="ts-section-title">Parents Information</p>
         <div class="row g-3">
-            <div class="col-12 col-sm-6 col-md-4">
+            <div class="col-12 col-sm-6 col-md-6">
                 <label class="ts-form-label">Father's Name</label>
                 <input type="text" name="father_name" class="form-control form-control-sm"
-                    value="<?= esc(old('father_name', $employee['father_name'])) ?>">
+                    value="<?= esc(old('father_name')) ?>">
             </div>
-            <div class="col-12 col-sm-6 col-md-4">
+            <div class="col-12 col-sm-6 col-md-6">
                 <label class="ts-form-label">Father's Occupation</label>
-                <input type="text" name="father_occupation"
-                    class="form-control form-control-sm"
-                    value="<?= esc(old('father_occupation', $employee['father_occupation'])) ?>">
+                <input type="text" name="father_occupation" class="form-control form-control-sm"
+                    value="<?= esc(old('father_occupation')) ?>">
             </div>
-            <div class="col-12 col-sm-6 col-md-4">
+        </div>
+        <div class="row g-3">
+            <div class="col-12 col-sm-6 col-md-6">
                 <label class="ts-form-label">Mother's Name</label>
                 <input type="text" name="mother_name" class="form-control form-control-sm"
-                    value="<?= esc(old('mother_name', $employee['mother_name'])) ?>">
+                    value="<?= esc(old('mother_name')) ?>">
             </div>
-            <div class="col-12 col-sm-6 col-md-4">
+            <div class="col-12 col-sm-6 col-md-6">
                 <label class="ts-form-label">Mother's Occupation</label>
-                <input type="text" name="mother_occupation"
-                    class="form-control form-control-sm"
-                    value="<?= esc(old('mother_occupation', $employee['mother_occupation'])) ?>">
+                <input type="text" name="mother_occupation" class="form-control form-control-sm"
+                    value="<?= esc(old('mother_occupation')) ?>">
             </div>
-            <div class="col-12 col-md-8">
+
+            <!-- Parents Address Group -->
+            <div class="col-12">
                 <label class="ts-form-label">Parents' Address</label>
-                <textarea name="parents_address" class="form-control form-control-sm"
-                    rows="2"><?= esc(old('parents_address', $employee['parents_address'])) ?></textarea>
+                <?php if (!empty($employee['parents_address'])): ?>
+                    <div class="col-12">
+                        <div class="alert alert-secondary py-2 mb-2" style="font-size:12.5px;">
+                            <strong>Current saved address:</strong> <?= esc($employee['parents_address']) ?>
+                            <br><span class="text-muted-sm">Re-select below only if you need to update it.</span>
+                        </div>
+                    </div>
+                <?php endif; ?>
+                <div class="row g-2">
+                    <div class="col-12 col-sm-4">
+                        <div class="ts-address-group-label">Province</div>
+                        <div class="ts-combo-wrap">
+                            <input type="text" id="parents_address_province_input"
+                                class="form-control form-control-sm"
+                                placeholder="Type or select province" autocomplete="off">
+                            <div id="parents_address_province_list" class="ts-combo-list"></div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-4">
+                        <div class="ts-address-group-label">City / Municipality</div>
+                        <div class="ts-combo-wrap">
+                            <input type="text" id="parents_address_city_input"
+                                class="form-control form-control-sm" disabled
+                                placeholder="Select province first" autocomplete="off">
+                            <div id="parents_address_city_list" class="ts-combo-list"></div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-4">
+                        <div class="ts-address-group-label">Barangay</div>
+                        <div class="ts-combo-wrap">
+                            <input type="text" id="parents_address_barangay_input"
+                                class="form-control form-control-sm" disabled
+                                placeholder="Select city first" autocomplete="off">
+                            <div id="parents_address_barangay_list" class="ts-combo-list"></div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="ts-address-group-label">House No. / Street / Subdivision</div>
+                        <input type="text" id="parents_address_street_input"
+                            class="form-control form-control-sm"
+                            placeholder="e.g. Purok 3, Brgy. Centro">
+                    </div>
+                </div>
+                <input type="hidden" name="parents_address" id="parents_address">
             </div>
         </div>
     </div>
@@ -388,4 +557,8 @@
 
 <?= $this->section('scripts') ?>
 <script src="<?= base_url('assets/js/employees.js') ?>"></script>
+<script>
+    window.TS_BASE_URL = "<?= base_url('/') ?>";
+</script>
+<script src="<?= base_url('assets/js/address-component.js') ?>"></script>
 <?= $this->endSection() ?>

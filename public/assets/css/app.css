@@ -6,10 +6,10 @@
 
 /* --- Design Tokens --- */
 :root {
-    --ts-green: #1D7A1D;
-    --ts-green-dark: #155715;
-    --ts-green-light: #EAF4EA;
-    --ts-sidebar-bg: #0D1A0D;
+    --ts-primary: #EE2B2B;
+    --ts-primary-dark: #C41E1E;
+    --ts-primary-light: #FDEAEA;
+    --ts-sidebar-bg: #1A0D0D;
     --ts-sidebar-width: 260px;
     --ts-topbar-h: 62px;
     --ts-text: #1A1A1A;
@@ -44,7 +44,7 @@ body {
 }
 
 a {
-    color: var(--ts-green);
+    color: var(--ts-primary);
     text-decoration: none;
 }
 
@@ -179,14 +179,14 @@ a:hover {
 .ts-nav-link:hover {
     color: #fff;
     background: rgba(255, 255, 255, 0.06);
-    border-left-color: rgba(29, 122, 29, 0.5);
+    border-left-color: rgba(238, 43, 43, 0.5);
     text-decoration: none;
 }
 
 .ts-nav-link.active {
     color: #fff;
-    background: rgba(29, 122, 29, 0.22);
-    border-left-color: var(--ts-green);
+    background: rgba(238, 43, 43, 0.22);
+    border-left-color: var(--ts-primary);
 }
 
 .ts-nav-link .nav-icon {
@@ -246,7 +246,7 @@ a:hover {
     width: 34px;
     height: 34px;
     border-radius: 50%;
-    background: var(--ts-green);
+    background: var(--ts-primary);
     color: #fff;
     display: flex;
     align-items: center;
@@ -415,7 +415,7 @@ a:hover {
     width: 28px;
     height: 28px;
     border-radius: 50%;
-    background: var(--ts-green);
+    background: var(--ts-primary);
     color: #fff;
     display: flex;
     align-items: center;
@@ -469,11 +469,27 @@ a:hover {
 }
 
 .ts-breadcrumb a {
-    color: var(--ts-green);
+    color: var(--ts-primary);
 }
 
 .ts-breadcrumb a:hover {
     text-decoration: underline;
+}
+
+/* ============================================================
+   FLASH ALERTS
+   ============================================================ */
+.alert-dismissible {
+    display: flex;
+    align-items: center;
+    padding-right: 2.5rem;
+}
+
+.alert-dismissible .btn-close {
+    position: static;
+    margin-left: auto;
+    padding: 0;
+    flex-shrink: 0;
 }
 
 /* ============================================================
@@ -537,9 +553,9 @@ a:hover {
     flex-shrink: 0;
 }
 
-.ts-stat-icon.green {
-    background: var(--ts-green-light);
-    color: var(--ts-green);
+.ts-stat-icon.primary {
+    background: var(--ts-primary-light);
+    color: var(--ts-primary);
 }
 
 .ts-stat-icon.blue {
@@ -579,6 +595,70 @@ a:hover {
     font-size: 12px;
     color: var(--ts-text-muted);
     margin-top: 3px;
+}
+
+/* ============================================================
+   ADDRESS COMBOBOX
+   ============================================================ */
+.ts-combo-wrap {
+    position: relative;
+}
+
+.ts-combo-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 1050;
+    background: var(--ts-white);
+    border: 1px solid var(--ts-border);
+    border-radius: var(--ts-radius);
+    box-shadow: var(--ts-shadow-md);
+    max-height: 220px;
+    overflow-y: auto;
+    margin-top: 2px;
+    display: none;
+}
+
+.ts-combo-list.show {
+    display: block;
+}
+
+.ts-combo-item {
+    padding: 7px 12px;
+    font-size: 13px;
+    cursor: pointer;
+    border-bottom: 1px solid #F3F4F6;
+}
+
+.ts-combo-item:last-child {
+    border-bottom: none;
+}
+
+.ts-combo-item:hover {
+    background: var(--ts-primary-light);
+    color: var(--ts-primary-dark);
+}
+
+.ts-combo-empty {
+    padding: 10px 12px;
+    font-size: 12.5px;
+    color: var(--ts-text-muted);
+    text-align: center;
+}
+
+.ts-disabled-overlay {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.ts-address-group-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ts-text-muted);
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 /* ============================================================
@@ -636,9 +716,9 @@ a:hover {
     white-space: nowrap;
 }
 
-.ts-badge.green {
-    background: var(--ts-green-light);
-    color: var(--ts-green-dark);
+.ts-badge.primary {
+    background: var(--ts-primary-light);
+    color: var(--ts-primary-dark);
 }
 
 .ts-badge.blue {
@@ -670,8 +750,8 @@ a:hover {
    BUTTONS
    ============================================================ */
 .btn-ts-primary {
-    background: var(--ts-green);
-    border: 1px solid var(--ts-green);
+    background: var(--ts-primary);
+    border: 1px solid var(--ts-primary);
     color: #fff;
     font-weight: 500;
     font-size: 13.5px;
@@ -681,8 +761,8 @@ a:hover {
 
 .btn-ts-primary:hover,
 .btn-ts-primary:focus {
-    background: var(--ts-green-dark);
-    border-color: var(--ts-green-dark);
+    background: var(--ts-primary-dark);
+    border-color: var(--ts-primary-dark);
     color: #fff;
 }
 
@@ -693,8 +773,8 @@ a:hover {
 
 .btn-ts-outline {
     background: transparent;
-    border: 1px solid var(--ts-green);
-    color: var(--ts-green);
+    border: 1px solid var(--ts-primary);
+    color: var(--ts-primary);
     font-weight: 500;
     font-size: 13.5px;
     border-radius: var(--ts-radius);
@@ -702,7 +782,7 @@ a:hover {
 }
 
 .btn-ts-outline:hover {
-    background: var(--ts-green);
+    background: var(--ts-primary);
     color: #fff;
 }
 
@@ -722,16 +802,16 @@ a:hover {
     font-weight: 700;
     letter-spacing: 1px;
     text-transform: uppercase;
-    color: var(--ts-green);
-    border-bottom: 2px solid var(--ts-green-light);
+    color: var(--ts-primary);
+    border-bottom: 2px solid var(--ts-primary-light);
     padding-bottom: 6px;
     margin: 8px 0 16px;
 }
 
 .form-control:focus,
 .form-select:focus {
-    border-color: var(--ts-green);
-    box-shadow: 0 0 0 0.2rem rgba(29, 122, 29, 0.15);
+    border-color: var(--ts-primary);
+    box-shadow: 0 0 0 0.2rem rgba(238, 43, 43, 0.15);
 }
 
 /* ============================================================
@@ -741,8 +821,8 @@ a:hover {
     width: 34px;
     height: 34px;
     border-radius: 50%;
-    background: var(--ts-green-light);
-    color: var(--ts-green-dark);
+    background: var(--ts-primary-light);
+    color: var(--ts-primary-dark);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -785,8 +865,8 @@ a:hover {
 /* ============================================================
    UTILITIES
    ============================================================ */
-.text-green {
-    color: var(--ts-green) !important;
+.text-primary-ts {
+    color: var(--ts-primary) !important;
 }
 
 .text-muted-sm {
@@ -919,4 +999,23 @@ a:hover {
 .ts-sidebar::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.12);
     border-radius: 4px;
+}
+
+/* ============================================================
+   GLOBAL UPPERCASE INPUT ENFORCEMENT
+   ============================================================ */
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="search"],
+textarea {
+    text-transform: uppercase;
+}
+
+/* Exceptions: fields that must NOT be forced uppercase */
+input[type="email"].ts-no-uppercase,
+input.ts-no-uppercase,
+textarea.ts-no-uppercase,
+input[type="password"] {
+    text-transform: none;
 }

@@ -21,7 +21,7 @@ $statusColor = [
                         border:3px solid var(--ts-green-light);">
         <?php else: ?>
             <div class="ts-avatar lg">
-                <?= strtoupper(substr($employee['first_name'], 0, 1).substr($employee['last_name'], 0, 1)) ?>
+                <?= strtoupper(substr($employee['first_name'], 0, 1) . substr($employee['last_name'], 0, 1)) ?>
             </div>
         <?php endif; ?>
         <div>
@@ -63,7 +63,8 @@ $statusColor = [
         <a href="<?= base_url('/employees/toggle-status/' . $employee['id']) ?>"
             class="btn btn-sm <?= $employee['is_active'] ? 'btn-outline-danger' : 'btn-outline-success' ?>"
             data-confirm-delete="<?= base_url('/employees/toggle-status/' . $employee['id']) ?>"
-            data-label="<?= $employee['is_active'] ? 'Deactivate' : 'Activate' ?> this employee">
+            data-confirm-type="<?= $employee['is_active'] ? 'deactivate' : 'activate' ?>"
+            data-label="<?= esc($employee['last_name'] . ', ' . $employee['first_name']) ?>">
             <?= svg_icon($employee['is_active'] ? 'x' : 'check', 'me-1', '14') ?>
             <?= $employee['is_active'] ? 'Deactivate' : 'Activate' ?>
         </a>

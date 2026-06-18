@@ -76,7 +76,7 @@
             <!-- Footer -->
             <footer class="ts-footer">
                 &copy; <?= date('Y') ?> Tricrete Systems &mdash;
-                Conrete Products Manufacturing. All rights reserved.
+                Tricrete Construction. All rights reserved.
             </footer>
 
         </div>

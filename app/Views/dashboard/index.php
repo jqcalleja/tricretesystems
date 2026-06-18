@@ -20,7 +20,7 @@
 <div class="row g-3 mb-4">
     <div class="col-6 col-md-4 col-lg-2">
         <div class="ts-stat-card h-100">
-            <div class="ts-stat-icon green">
+            <div class="ts-stat-icon primary">
                 <?= svg_icon('employees', '', '22') ?>
             </div>
             <div>
@@ -93,7 +93,7 @@
         <div class="ts-card h-100 mb-0 h-100">
             <div class="ts-card-header">
                 <h6 class="ts-card-title">
-                    <?= svg_icon('chart-bar', 'text-green', '16') ?>
+                    <?= svg_icon('chart-bar', 'text-primary-ts', '16') ?>
                     Attendance Trend — Last 7 Days
                 </h6>
             </div>
@@ -105,7 +105,7 @@
         <div class="ts-card h-100 mb-0 h-100">
             <div class="ts-card-header">
                 <h6 class="ts-card-title">
-                    <?= svg_icon('projects', 'text-green', '16') ?>
+                    <?= svg_icon('projects', 'text-primary-ts', '16') ?>
                     Manpower Per Project
                 </h6>
                 <a href="<?= base_url('/projects') ?>"
@@ -136,7 +136,7 @@
                                         <?= esc($p['location'] ?? '—') ?>
                                     </td>
                                     <td class="text-center">
-                                        <span class="ts-badge <?= $p['manpower_count'] > 0 ? 'green' : 'gray' ?>">
+                                        <span class="ts-badge <?= $p['manpower_count'] > 0 ? 'primary' : 'gray' ?>">
                                             <?= $p['manpower_count'] ?>
                                         </span>
                                     </td>
@@ -158,7 +158,7 @@
         <div class="ts-card mb-0 h-100">
             <div class="ts-card-header">
                 <h6 class="ts-card-title">
-                    <?= svg_icon('clock', 'text-green', '16') ?>
+                    <?= svg_icon('clock', 'text-primary-ts', '16') ?>
                     Today's Attendance Log
                 </h6>
                 <a href="<?= base_url('/attendance') ?>"
@@ -221,7 +221,7 @@
                                         <?php if ($rec['is_absent']): ?>
                                             <span class="ts-badge red">Absent</span>
                                         <?php else: ?>
-                                            <span class="ts-badge green">Present</span>
+                                            <span class="ts-badge primary">Present</span>
                                         <?php endif; ?>
                                     </td>
                                 </tr>
@@ -237,7 +237,7 @@
         <div class="ts-card mb-0 h-100">
             <div class="ts-card-header">
                 <h6 class="ts-card-title">
-                    <?= svg_icon('employees', 'text-green', '16') ?>
+                    <?= svg_icon('employees', 'text-primary-ts', '16') ?>
                     Recently Added Employees
                 </h6>
                 <a href="<?= base_url('/employees/create') ?>"
@@ -254,7 +254,7 @@
             <?php else: ?>
                 <?php
                 $statusColor = [
-                    'Regular'       => 'green',
+                    'Regular'       => 'primary',
                     'Probationary'  => 'amber',
                     'Project-Based' => 'blue',
                     'Casual'        => 'gray',

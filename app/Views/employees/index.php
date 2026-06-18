@@ -89,7 +89,7 @@
 <div class="ts-card">
     <div class="ts-card-header">
         <h6 class="ts-card-title">
-            <?= svg_icon('employees', 'text-green', '16') ?>
+            <?= svg_icon('employees', 'text-primary-ts', '16') ?>
             Employees
             <span class="ts-badge gray ms-1"><?= count($employees) ?></span>
         </h6>
@@ -130,7 +130,7 @@
                                             alt="<?= esc($emp['first_name']) ?>">
                                     <?php else: ?>
                                         <div class="ts-avatar">
-                                            <?= strtoupper(substr($emp['first_name'], 0, 1)).strtoupper(substr($emp['last_name'], 0, 1)) ?>
+                                            <?= strtoupper(substr($emp['first_name'], 0, 1)) . strtoupper(substr($emp['last_name'], 0, 1)) ?>
                                         </div>
                                     <?php endif; ?>
                                     <div>
@@ -159,7 +159,7 @@
                             <td>
                                 <?php
                                 $statusColor = [
-                                    'Regular'       => 'green',
+                                    'Regular'       => 'primary',
                                     'Probationary'  => 'amber',
                                     'Project-Based' => 'blue',
                                     'Casual'        => 'gray',
@@ -171,7 +171,7 @@
                             </td>
                             <td class="text-center">
                                 <?php if ($emp['is_active']): ?>
-                                    <span class="ts-badge green">Active</span>
+                                    <span class="ts-badge primary">Active</span>
                                 <?php else: ?>
                                     <span class="ts-badge red">Inactive</span>
                                 <?php endif; ?>
@@ -190,6 +190,7 @@
                                         class="ts-icon-btn"
                                         title="<?= $emp['is_active'] ? 'Deactivate' : 'Activate' ?>"
                                         data-confirm-delete="<?= base_url('/employees/toggle-status/' . $emp['id']) ?>"
+                                        data-confirm-type="<?= $emp['is_active'] ? 'deactivate' : 'activate' ?>"
                                         data-label="<?= esc($emp['first_name']) ?>">
                                         <?= svg_icon($emp['is_active'] ? 'x' : 'check', '', '15') ?>
                                     </a>

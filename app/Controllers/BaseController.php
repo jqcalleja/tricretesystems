@@ -42,4 +42,24 @@ abstract class BaseController extends Controller
         // Preload any models, libraries, etc, here.
         // $this->session = service('session');
     }
+
+    /**
+     * Uppercase all string values in an array, except specified keys.
+     * Standard pattern applied across all modules for uniform data entry.
+     *
+     * @param array $data     The data array to normalize
+     * @param array $exclude  Keys to skip (e.g. email, password, hashed fields)
+     */
+    protected function uppercaseFields(array $data, array $exclude = ['email_address', 'password', 'password_confirm']): array
+    {
+        foreach ($data as $key => $value) {
+            if (in_array($key, $exclude, true)) {
+                continue;
+            }
+            if (is_string($value)) {
+                $data[$key] = mb_strtoupper($value);
+            }
+        }
+        return $data;
+    }
 }

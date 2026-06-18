@@ -86,21 +86,56 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // ----------------------------------------------------------
-    // 5. SweetAlert2 delete confirmation
+    // 5. SweetAlert2 confirmation (delete, deactivate, activate, generic)
     // ----------------------------------------------------------
     document.querySelectorAll('[data-confirm-delete]').forEach(function (btn) {
         btn.addEventListener('click', function (e) {
             e.preventDefault();
             const target = btn.getAttribute('data-confirm-delete') || btn.getAttribute('href');
             const label = btn.getAttribute('data-label') || 'this record';
+            const type = btn.getAttribute('data-confirm-type') || 'delete';
+
+            const presets = {
+                delete: {
+                    title: 'Delete ' + label + '?',
+                    text: 'This action cannot be undone.',
+                    icon: 'warning',
+                    confirmButtonColor: '#DC2626',
+                    confirmButtonText: 'Yes, delete it',
+                },
+                deactivate: {
+                    title: 'Deactivate ' + label + '?',
+                    text: 'They will be marked as inactive and hidden from active lists.',
+                    icon: 'warning',
+                    confirmButtonColor: '#DC2626',
+                    confirmButtonText: 'Yes, deactivate',
+                },
+                activate: {
+                    title: 'Activate ' + label + '?',
+                    text: 'They will be marked as active again.',
+                    icon: 'question',
+                    confirmButtonColor: '#EE2B2B',
+                    confirmButtonText: 'Yes, activate',
+                },
+                generic: {
+                    title: label + '?',
+                    text: 'Please confirm this action.',
+                    icon: 'question',
+                    confirmButtonColor: '#EE2B2B',
+                    confirmButtonText: 'Yes, continue',
+                },
+            };
+
+            const preset = presets[type] || presets.generic;
+
             Swal.fire({
-                title: 'Delete ' + label + '?',
-                text: 'This action cannot be undone.',
-                icon: 'warning',
+                title: preset.title,
+                text: preset.text,
+                icon: preset.icon,
                 showCancelButton: true,
-                confirmButtonColor: '#DC2626',
+                confirmButtonColor: preset.confirmButtonColor,
                 cancelButtonColor: '#6B7280',
-                confirmButtonText: 'Yes, delete it',
+                confirmButtonText: preset.confirmButtonText,
                 cancelButtonText: 'Cancel',
             }).then(function (result) {
                 if (result.isConfirmed) window.location.href = target;
@@ -119,5 +154,44 @@ document.addEventListener('DOMContentLoaded', function () {
             timeOut: 3500,
         };
     }
+
+    // ----------------------------------------------------------
+    // 7. Global uppercase enforcement on text inputs
+    // ----------------------------------------------------------
+    function shouldUppercase(el) {
+        if (el.classList.contains('ts-no-uppercase')) return false;
+        if (el.type === 'password') return false;
+        if (el.type === 'email') return false; // emails are conventionally lowercase
+        if (el.type === 'hidden') return false;
+        return el.tagName === 'TEXTAREA'
+            || el.type === 'text'
+            || el.type === 'search'
+            || el.type === 'tel';
+    }
+
+    document.querySelectorAll('input, textarea').forEach(function (el) {
+        if (!shouldUppercase(el)) return;
+
+        el.addEventListener('input', function () {
+            const start = el.selectionStart;
+            const end = el.selectionEnd;
+            el.value = el.value.toUpperCase();
+            // restore cursor position so typing doesn't jump
+            el.setSelectionRange(start, end);
+        });
+    });
+
+    // Also catch inputs added dynamically later (e.g. modal forms, combobox fields)
+    document.addEventListener('input', function (e) {
+        const el = e.target;
+        if (!(el.tagName === 'INPUT' || el.tagName === 'TEXTAREA')) return;
+        if (!shouldUppercase(el)) return;
+        if (el.dataset.tsUppercaseBound) return; // already handled by direct listener above
+
+        const start = el.selectionStart;
+        const end = el.selectionEnd;
+        el.value = el.value.toUpperCase();
+        el.setSelectionRange(start, end);
+    }, true);
 
 });

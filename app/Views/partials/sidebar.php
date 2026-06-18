@@ -9,7 +9,7 @@ $segment = $uri->getSegment(1) ?? '';
         <?= svg_logo_mark('', '34') ?>
         <div class="ts-brand-text">
             <span class="ts-brand-name">Tricrete Systems</span>
-            <span class="ts-brand-sub">Conrete Products Mfg.</span>
+            <span class="ts-brand-sub">By: Tricrete Construction</span>
         </div>
     </a>
 
