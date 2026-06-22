@@ -17,7 +17,8 @@ class CharacterReferenceModel extends Model
         'employee_id',
         'name',
         'occupation',
-        'address',
+        'address_id',
+        'address_street',
         'telephone',
     ];
 
@@ -28,8 +29,11 @@ class CharacterReferenceModel extends Model
 
     public function getByEmployee(int $employeeId): array
     {
-        return $this->where('employee_id', $employeeId)
-            ->orderBy('name', 'ASC')
-            ->findAll();
+        return $this->db->table('character_references cr')
+            ->select('cr.*, a.province, a.city, a.barangay')
+            ->join('addresses a', 'a.id = cr.address_id', 'left')
+            ->where('cr.employee_id', $employeeId)
+            ->orderBy('cr.name', 'ASC')
+            ->get()->getResultArray();
     }
 }

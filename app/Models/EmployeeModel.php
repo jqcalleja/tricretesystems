@@ -6,12 +6,12 @@ use CodeIgniter\Model;
 
 class EmployeeModel extends Model
 {
-    protected $table         = 'employees';
-    protected $primaryKey    = 'id';
-    protected $returnType    = 'array';
-    protected $useTimestamps = true;
-    protected $createdField  = 'created_at';
-    protected $updatedField  = 'updated_at';
+    protected $table          = 'employees';
+    protected $primaryKey     = 'id';
+    protected $returnType     = 'array';
+    protected $useTimestamps  = true;
+    protected $createdField   = 'created_at';
+    protected $updatedField   = 'updated_at';
     protected $skipValidation = true;
 
     protected $allowedFields = [
@@ -29,19 +29,23 @@ class EmployeeModel extends Model
         'religion',
         'height_cm',
         'weight_kg',
-        'city_address',
-        'provincial_address',
+        'current_address_id',
+        'current_address_street',
+        'provincial_address_id',
+        'provincial_address_street',
         'contact_number',
         'email_address',
         'spouse_name',
         'spouse_occupation',
-        'spouse_address',
+        'spouse_address_id',
+        'spouse_address_street',
         'spouse_contact_number',
         'father_name',
         'father_occupation',
         'mother_name',
         'mother_occupation',
-        'parents_address',
+        'parents_address_id',
+        'parents_address_street',
         'sss_number',
         'philhealth_number',
         'pagibig_number',
@@ -81,9 +85,6 @@ class EmployeeModel extends Model
         ],
     ];
 
-    // ------------------------------------------------------------
-    // Full name helper
-    // ------------------------------------------------------------
     public function getFullName(array $employee): string
     {
         $middle = $employee['middle_name']
@@ -94,15 +95,18 @@ class EmployeeModel extends Model
             . $middle;
     }
 
-    // ------------------------------------------------------------
-    // List with position and department joined
-    // ------------------------------------------------------------
     public function getList(array $filters = []): array
     {
         $builder = $this->db->table('employees e')
-            ->select('e.*, p.title AS position_title, d.name AS department_name')
+            ->select('e.*,
+                  p.title AS position_title,
+                  d.name AS department_name,
+                  ca.province AS current_address_province,
+                  ca.city     AS current_address_city,
+                  ca.barangay AS current_address_barangay')
             ->join('positions p',   'p.id = e.position_id',   'left')
-            ->join('departments d', 'd.id = e.department_id', 'left');
+            ->join('departments d', 'd.id = e.department_id', 'left')
+            ->join('addresses ca',  'ca.id = e.current_address_id', 'left');
 
         if (isset($filters['is_active']) && $filters['is_active'] !== null) {
             $builder->where('e.is_active', $filters['is_active']);
@@ -130,24 +134,41 @@ class EmployeeModel extends Model
             ->get()->getResultArray();
     }
 
-    // ------------------------------------------------------------
-    // Single employee with joins
-    // ------------------------------------------------------------
+    /**
+     * Single employee with joins — includes all 4 address records.
+     * Street comes from the employee row itself; province/city/barangay
+     * come from the joined addresses table.
+     */
     public function getWithDetails(int $id): ?array
     {
         $row = $this->db->table('employees e')
-            ->select('e.*, p.title AS position_title, d.name AS department_name')
+            ->select('e.*,
+                      p.title AS position_title,
+                      d.name AS department_name,
+                      ca.province AS current_address_province,
+                      ca.city     AS current_address_city,
+                      ca.barangay AS current_address_barangay,
+                      pa.province AS provincial_address_province,
+                      pa.city     AS provincial_address_city,
+                      pa.barangay AS provincial_address_barangay,
+                      sa.province AS spouse_address_province,
+                      sa.city     AS spouse_address_city,
+                      sa.barangay AS spouse_address_barangay,
+                      pra.province AS parents_address_province,
+                      pra.city     AS parents_address_city,
+                      pra.barangay AS parents_address_barangay')
             ->join('positions p',   'p.id = e.position_id',   'left')
             ->join('departments d', 'd.id = e.department_id', 'left')
+            ->join('addresses ca',  'ca.id = e.current_address_id',    'left')
+            ->join('addresses pa',  'pa.id = e.provincial_address_id', 'left')
+            ->join('addresses sa',  'sa.id = e.spouse_address_id',     'left')
+            ->join('addresses pra', 'pra.id = e.parents_address_id',   'left')
             ->where('e.id', $id)
             ->get()->getRowArray();
 
         return $row ?: null;
     }
 
-    // ------------------------------------------------------------
-    // Age calculator
-    // ------------------------------------------------------------
     public function calculateAge(string $dob): int
     {
         return (int) date_diff(
@@ -156,9 +177,6 @@ class EmployeeModel extends Model
         )->y;
     }
 
-    // ------------------------------------------------------------
-    // Generate next employee number
-    // ------------------------------------------------------------
     public function generateEmployeeNo(): string
     {
         $year   = date('Y');

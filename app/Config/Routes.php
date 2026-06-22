@@ -17,6 +17,9 @@ $routes->get('/employees/edit/(:num)',               'Employees::edit/$1');
 $routes->post('/employees/update/(:num)',             'Employees::update/$1');
 $routes->get('/employees/toggle-status/(:num)',      'Employees::toggleStatus/$1');
 
+// ID Photos Viewer
+$routes->get('/employees/id-photo/(:num)/(:segment)', 'Employees::idPhoto/$1/$2');
+
 // Emergency Contacts
 $routes->post('/employees/(:num)/emergency/store',              'Employees::storeEmergency/$1');
 $routes->post('/employees/(:num)/emergency/update/(:num)',      'Employees::updateEmergency/$1/$2');

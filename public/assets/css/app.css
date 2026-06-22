@@ -131,12 +131,12 @@ a:hover {
 
 /* Nav section label */
 .ts-nav-label {
-    font-size: 9px;
+    font-size: 10px;
     font-weight: 700;
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.28);
-    padding: 20px 18px 6px;
+    color: rgba(255, 255, 255, 0.4);
+    padding: 14px 18px 10px;
     white-space: normal;
     overflow: visible;
     display: block;
@@ -145,9 +145,98 @@ a:hover {
 
 .ts-sidebar.collapsed .ts-nav-label {
     text-align: center;
-    padding: 20px 4px 6px;
+    padding: 14px 4px 10px;
     font-size: 7px;
     letter-spacing: 0;
+}
+
+/* Group wrapper — adds breathing room and a visual divider between groups */
+.ts-nav-group {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.ts-nav-group:first-of-type {
+    margin-top: 6px;
+    padding-top: 0;
+    border-top: none;
+}
+
+.ts-sidebar.collapsed .ts-nav-group {
+    margin-top: 10px;
+    padding-top: 10px;
+}
+
+/* ============================================================
+   COLLAPSIBLE NAV GROUPS
+   ============================================================ */
+.ts-nav-label-toggle {
+    width: calc(100% - 12px);
+    margin: 0 6px;
+    background: rgba(255, 255, 255, 0.04);
+    border: none;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    text-align: left;
+    font-family: inherit;
+    transition: var(--transition);
+}
+
+.ts-nav-label-toggle:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.ts-nav-label-chevron {
+    display: inline-flex;
+    align-items: center;
+    transition: transform 0.2s ease;
+    opacity: 0.6;
+    flex-shrink: 0;
+    margin-right: 14px;
+}
+
+.ts-nav-label-toggle.collapsed .ts-nav-label-chevron {
+    transform: rotate(-90deg);
+}
+
+.ts-nav {
+    overflow: hidden;
+    padding-top: 4px;
+    display: grid;
+    grid-template-rows: 1fr;
+    transition: grid-template-rows 0.22s ease, padding-top 0.22s ease;
+}
+
+.ts-nav>.ts-nav-collapse-inner {
+    overflow: hidden;
+    min-height: 0;
+}
+
+.ts-nav.collapsed {
+    grid-template-rows: 0fr;
+    padding-top: 0;
+}
+
+/* Hide chevron and disable toggle when sidebar itself is minimized */
+.ts-sidebar.collapsed .ts-nav-label-chevron {
+    display: none;
+}
+
+.ts-sidebar.collapsed .ts-nav-label-toggle {
+    pointer-events: none;
+    background: none;
+    width: 100%;
+    margin: 0;
+}
+
+.ts-sidebar.collapsed .ts-nav {
+    max-height: none !important;
+    padding-top: 0;
 }
 
 /* Nav list */
@@ -640,6 +729,11 @@ a:hover {
     color: var(--ts-primary-dark);
 }
 
+.ts-combo-item.highlighted {
+    background: var(--ts-primary-light);
+    color: var(--ts-primary-dark);
+}
+
 .ts-combo-empty {
     padding: 10px 12px;
     font-size: 12.5px;
@@ -700,7 +794,7 @@ a:hover {
 }
 
 .ts-table tbody tr:hover {
-    background: #FAFAFA;
+    background: #E0E0E0;
 }
 
 /* ============================================================

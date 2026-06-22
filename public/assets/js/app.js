@@ -194,4 +194,26 @@ document.addEventListener('DOMContentLoaded', function () {
         el.setSelectionRange(start, end);
     }, true);
 
+    // ----------------------------------------------------------
+    // 8. Collapsible nav groups (independent of sidebar minimize)
+    // ----------------------------------------------------------
+    document.querySelectorAll('.ts-nav-label-toggle').forEach(function (btn) {
+        const targetId = btn.getAttribute('data-target');
+        const targetEl = document.getElementById(targetId);
+        if (!targetEl) return;
+
+        // Restore saved collapsed state
+        const savedState = localStorage.getItem('ts_navgroup_' + targetId);
+        if (savedState === 'collapsed') {
+            btn.classList.add('collapsed');
+            targetEl.classList.add('collapsed');
+        }
+
+        btn.addEventListener('click', function () {
+            const isCollapsed = btn.classList.toggle('collapsed');
+            targetEl.classList.toggle('collapsed', isCollapsed);
+            localStorage.setItem('ts_navgroup_' + targetId, isCollapsed ? 'collapsed' : 'expanded');
+        });
+    });
+
 });

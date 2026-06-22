@@ -19,7 +19,8 @@ class EmergencyContactModel extends Model
         'first_name',
         'middle_name',
         'relationship',
-        'address',
+        'address_id',
+        'address_street',
         'contact_number',
         'sort_order',
     ];
@@ -32,8 +33,11 @@ class EmergencyContactModel extends Model
 
     public function getByEmployee(int $employeeId): array
     {
-        return $this->where('employee_id', $employeeId)
-            ->orderBy('sort_order', 'ASC')
-            ->findAll();
+        return $this->db->table('emergency_contacts ec')
+            ->select('ec.*, a.province, a.city, a.barangay')
+            ->join('addresses a', 'a.id = ec.address_id', 'left')
+            ->where('ec.employee_id', $employeeId)
+            ->orderBy('ec.sort_order', 'ASC')
+            ->get()->getResultArray();
     }
 }

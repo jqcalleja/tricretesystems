@@ -180,7 +180,7 @@
                             </td>
                             <td class="text-center">
                                 <?php if ($emp['is_active']): ?>
-                                    <span class="ts-badge primary">Active</span>
+                                    <span class="ts-badge statusgreen">Active</span>
                                 <?php else: ?>
                                     <span class="ts-badge red">Inactive</span>
                                 <?php endif; ?>

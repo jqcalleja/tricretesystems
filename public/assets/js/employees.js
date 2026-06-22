@@ -52,18 +52,30 @@ document.addEventListener('DOMContentLoaded', function () {
     // ----------------------------------------------------------
     window.editEmergency = function (data) {
         const form = document.getElementById('emergencyForm');
-        const empId = form.action.split('/employees/')[1].split('/')[0];
+        const empId = form.dataset.employeeId;
 
         document.getElementById('emergencyModalTitle').textContent = 'Edit Emergency Contact';
-        form.action = `/employees/${empId}/emergency/update/${data.id}`;
+        form.action = `${window.TS_BASE_URL}employees/${empId}/emergency/update/${data.id}`;
 
         document.getElementById('ec_last_name').value = data.last_name || '';
         document.getElementById('ec_first_name').value = data.first_name || '';
         document.getElementById('ec_middle_name').value = data.middle_name || '';
         document.getElementById('ec_relationship').value = data.relationship || '';
         document.getElementById('ec_contact_number').value = data.contact_number || '';
-        document.getElementById('ec_address').value = data.address || '';
         document.getElementById('ec_sort_order').value = data.sort_order || 1;
+
+        // Populate address combobox group (province/city/barangay/street)
+        if (window.TricreteAddress) {
+            const group = window.TricreteAddress.initAddressGroup('ec_address');
+            if (group) {
+                group.setParts({
+                    province: data.province || '',
+                    city: data.city || '',
+                    barangay: data.barangay || '',
+                    street: data.street || ''
+                });
+            }
+        }
 
         bootstrap.Modal.getOrCreateInstance(
             document.getElementById('modalAddEmergency')
@@ -74,10 +86,16 @@ document.addEventListener('DOMContentLoaded', function () {
         ?.addEventListener('hidden.bs.modal', function () {
             document.getElementById('emergencyModalTitle').textContent = 'Add Emergency Contact';
             document.getElementById('emergencyForm').reset();
-            // restore store action
+
+            // Clear address combobox group
+            if (window.TricreteAddress) {
+                const group = window.TricreteAddress.initAddressGroup('ec_address');
+                if (group) group.setParts({ province: '', city: '', barangay: '', street: '' });
+            }
+
             const form = document.getElementById('emergencyForm');
-            const empId = form.action.match(/\/employees\/(\d+)\//)?.[1];
-            if (empId) form.action = `/employees/${empId}/emergency/store`;
+            const empId = form.dataset.employeeId;
+            form.action = `${window.TS_BASE_URL}employees/${empId}/emergency/store`;
         });
 
     // ----------------------------------------------------------
@@ -85,10 +103,10 @@ document.addEventListener('DOMContentLoaded', function () {
     // ----------------------------------------------------------
     window.editChild = function (data) {
         const form = document.getElementById('childForm');
-        const empId = form.action.split('/employees/')[1].split('/')[0];
+        const empId = form.dataset.employeeId;
 
         document.getElementById('childModalTitle').textContent = 'Edit Child';
-        form.action = `/employees/${empId}/child/update/${data.id}`;
+        form.action = `${window.TS_BASE_URL}employees/${empId}/child/update/${data.id}`;
 
         document.getElementById('child_name').value = data.name || '';
 
@@ -109,8 +127,8 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('childModalTitle').textContent = 'Add Child';
             document.getElementById('childForm').reset();
             const form = document.getElementById('childForm');
-            const empId = form.action.match(/\/employees\/(\d+)\//)?.[1];
-            if (empId) form.action = `/employees/${empId}/child/store`;
+            const empId = form.dataset.employeeId;
+            form.action = `${window.TS_BASE_URL}employees/${empId}/child/store`;
         });
 
     // ----------------------------------------------------------
@@ -118,10 +136,10 @@ document.addEventListener('DOMContentLoaded', function () {
     // ----------------------------------------------------------
     window.editEducation = function (data) {
         const form = document.getElementById('educationForm');
-        const empId = form.action.split('/employees/')[1].split('/')[0];
+        const empId = form.dataset.employeeId;
 
         document.getElementById('educationModalTitle').textContent = 'Edit Education Record';
-        form.action = `/employees/${empId}/education/update/${data.id}`;
+        form.action = `${window.TS_BASE_URL}employees/${empId}/education/update/${data.id}`;
 
         document.getElementById('edu_level').value = data.level || '';
         document.getElementById('edu_school').value = data.school_name || '';
@@ -137,8 +155,8 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('educationModalTitle').textContent = 'Add Education Record';
             document.getElementById('educationForm').reset();
             const form = document.getElementById('educationForm');
-            const empId = form.action.match(/\/employees\/(\d+)\//)?.[1];
-            if (empId) form.action = `/employees/${empId}/education/store`;
+            const empId = form.dataset.employeeId;
+            form.action = `${window.TS_BASE_URL}employees/${empId}/education/store`;
         });
 
     // ----------------------------------------------------------
@@ -146,10 +164,10 @@ document.addEventListener('DOMContentLoaded', function () {
     // ----------------------------------------------------------
     window.editHistory = function (data) {
         const form = document.getElementById('historyForm');
-        const empId = form.action.split('/employees/')[1].split('/')[0];
+        const empId = form.dataset.employeeId;
 
         document.getElementById('historyModalTitle').textContent = 'Edit Employment History';
-        form.action = `/employees/${empId}/history/update/${data.id}`;
+        form.action = `${window.TS_BASE_URL}employees/${empId}/history/update/${data.id}`;
 
         document.getElementById('hist_company').value = data.company_name || '';
         document.getElementById('hist_position').value = data.position || '';
@@ -173,8 +191,8 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('historyModalTitle').textContent = 'Add Employment History';
             document.getElementById('historyForm').reset();
             const form = document.getElementById('historyForm');
-            const empId = form.action.match(/\/employees\/(\d+)\//)?.[1];
-            if (empId) form.action = `/employees/${empId}/history/store`;
+            const empId = form.dataset.employeeId;
+            form.action = `${window.TS_BASE_URL}employees/${empId}/history/store`;
         });
 
     // ----------------------------------------------------------
@@ -182,18 +200,42 @@ document.addEventListener('DOMContentLoaded', function () {
     // ----------------------------------------------------------
     window.editReference = function (data) {
         const form = document.getElementById('referenceForm');
-        const empId = form.action.split('/employees/')[1].split('/')[0];
+        const empId = form.dataset.employeeId;
 
         document.getElementById('referenceModalTitle').textContent = 'Edit Character Reference';
-        form.action = `/employees/${empId}/reference/update/${data.id}`;
+        form.action = `${window.TS_BASE_URL}employees/${empId}/reference/update/${data.id}`;
 
         document.getElementById('ref_name').value = data.name || '';
         document.getElementById('ref_occupation').value = data.occupation || '';
         document.getElementById('ref_telephone').value = data.telephone || '';
-        document.getElementById('ref_address').value = data.address || '';
+
+        // Populate address combobox group
+        if (window.TricreteAddress) {
+            const group = window.TricreteAddress.initAddressGroup('ref_address');
+            if (group) {
+                group.setParts({
+                    province: data.province || '',
+                    city: data.city || '',
+                    barangay: data.barangay || '',
+                    street: data.street || ''
+                });
+            }
+        }
 
         bootstrap.Modal.getOrCreateInstance(
             document.getElementById('modalAddReference')
+        ).show();
+    };
+
+    /**
+ * Opens the ID photo preview modal with the given image URL and title.
+ * Used for SSS/PhilHealth/Pag-IBIG/TIN front/back photo thumbnails.
+ */
+    window.showIdPhotoModal = function (imageUrl, title) {
+        document.getElementById('idPhotoModalImage').src = imageUrl;
+        document.getElementById('idPhotoModalTitle').textContent = title;
+        bootstrap.Modal.getOrCreateInstance(
+            document.getElementById('modalIdPhoto')
         ).show();
     };
 
@@ -201,9 +243,16 @@ document.addEventListener('DOMContentLoaded', function () {
         ?.addEventListener('hidden.bs.modal', function () {
             document.getElementById('referenceModalTitle').textContent = 'Add Character Reference';
             document.getElementById('referenceForm').reset();
+
+            // Clear address combobox group
+            if (window.TricreteAddress) {
+                const group = window.TricreteAddress.initAddressGroup('ref_address');
+                if (group) group.setParts({ province: '', city: '', barangay: '', street: '' });
+            }
+
             const form = document.getElementById('referenceForm');
-            const empId = form.action.match(/\/employees\/(\d+)\//)?.[1];
-            if (empId) form.action = `/employees/${empId}/reference/store`;
+            const empId = form.dataset.employeeId;
+            form.action = `${window.TS_BASE_URL}employees/${empId}/reference/store`;
         });
 
 });

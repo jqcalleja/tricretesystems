@@ -2,13 +2,14 @@
 
 <?php
 /**
- * @var array $employee    Employee record with joined position/department names
- * @var int    $age        Calculated age from date_of_birth
- * @var array $emergency   Emergency contacts for this employee
- * @var array $children    Children records for this employee
- * @var array $education   Educational background records
- * @var array $history     Employment history records
- * @var array $references  Character reference records
+ * @var array $employee     Employee record with joined position/department names
+ * @var int    $age         Calculated age from date_of_birth
+ * @var array $emergency    Emergency contacts for this employee
+ * @var array $children     Children records for this employee
+ * @var array $education    Educational background records
+ * @var array $history      Employment history records
+ * @var array $references   Character reference records
+ * @var array $idDocuments  Uploaded images for Government IDs
  */
 ?>
 
@@ -149,6 +150,21 @@ $statusColor = [
                             Personal Information
                         </h6>
                     </div>
+                    <?php
+                    $currentAddressDisplay = trim(implode(', ', array_filter([
+                        $employee['current_address_street']   ?? '',
+                        $employee['current_address_barangay'] ?? '',
+                        $employee['current_address_city']     ?? '',
+                        $employee['current_address_province'] ?? '',
+                    ])));
+
+                    $provincialAddressDisplay = trim(implode(', ', array_filter([
+                        $employee['provincial_address_street']   ?? '',
+                        $employee['provincial_address_barangay'] ?? '',
+                        $employee['provincial_address_city']     ?? '',
+                        $employee['provincial_address_province'] ?? '',
+                    ])));
+                    ?>
                     <dl class="row g-0 mb-0" style="font-size:13px;">
                         <?php
                         $personalFields = [
@@ -163,16 +179,14 @@ $statusColor = [
                             'Religion'        => $employee['religion'],
                             'Height'          => $employee['height_cm'] ? $employee['height_cm'] . ' cm' : '—',
                             'Weight'          => $employee['weight_kg'] ? $employee['weight_kg'] . ' kg' : '—',
-                            'City Address'    => $employee['city_address'],
-                            'Prov. Address'   => $employee['provincial_address'],
+                            'Current Address' => $currentAddressDisplay,
+                            'Prov. Address'    => $provincialAddressDisplay,
                             'Contact No.'     => $employee['contact_number'],
                             'Email'           => $employee['email_address'],
                         ];
                         foreach ($personalFields as $label => $value): ?>
-                            <dt class="col-5 text-muted-sm py-1
-                                border-bottom border-light"><?= $label ?></dt>
-                            <dd class="col-7 py-1 mb-0
-                                border-bottom border-light fw-500">
+                            <dt class="col-5 text-muted-sm py-1 border-bottom border-light"><?= $label ?></dt>
+                            <dd class="col-7 py-1 mb-0 border-bottom border-light fw-500">
                                 <?= esc($value ?: '—') ?>
                             </dd>
                         <?php endforeach; ?>
@@ -224,7 +238,7 @@ $statusColor = [
                 <div class="ts-card mb-0">
                     <div class="ts-card-header">
                         <h6 class="ts-card-title">
-                            <?= svg_icon('id-card', 'text-green', '15') ?>
+                            <?= svg_icon('id-card', 'text-primary-ts', '15') ?>
                             Government Information
                         </h6>
                     </div>
@@ -238,18 +252,64 @@ $statusColor = [
                         ];
                         foreach ($govFields as $label => $value): ?>
                             <dt class="col-5 text-muted-sm py-1
-                                border-bottom border-light"><?= $label ?></dt>
+                border-bottom border-light"><?= $label ?></dt>
                             <dd class="col-7 py-1 mb-0
-                                border-bottom border-light fw-600 tabular-nums">
+                border-bottom border-light fw-600 tabular-nums">
                                 <?= esc($value ?: '—') ?>
                             </dd>
                         <?php endforeach; ?>
                     </dl>
+
+                    <?php
+                    $idTypeLabels = ['SSS' => 'SSS', 'PhilHealth' => 'PhilHealth', 'Pag-IBIG' => 'Pag-IBIG', 'TIN' => 'TIN'];
+                    $hasAnyIdPhoto = false;
+                    foreach ($idDocuments as $doc) {
+                        if ($doc['photo_front'] || $doc['photo_back']) {
+                            $hasAnyIdPhoto = true;
+                            break;
+                        }
+                    }
+                    ?>
+                    <?php if ($hasAnyIdPhoto): ?>
+                        <p class="text-muted-sm fw-600 mt-3 mb-2">ID PHOTOS</p>
+                        <div class="row g-2">
+                            <?php foreach ($idDocuments as $type => $doc): ?>
+                                <?php if (! $doc['photo_front'] && ! $doc['photo_back']) continue; ?>
+                                <div class="col-6">
+                                    <div class="text-muted-sm mb-1"><?= esc($idTypeLabels[$type] ?? $type) ?></div>
+                                    <div class="d-flex gap-1">
+                                        <?php if ($doc['photo_front']): ?>
+                                            <img src="<?= base_url('employees/id-photo/' . $doc['id'] . '/front') ?>"
+                                                class="ts-id-thumb"
+                                                style="width:60px;height:40px;object-fit:cover;border-radius:4px;
+                                    border:1px solid var(--ts-border);cursor:pointer;"
+                                                onclick="showIdPhotoModal('<?= base_url('employees/id-photo/' . $doc['id'] . '/front') ?>', '<?= esc($idTypeLabels[$type] ?? $type) ?> — Front')">
+                                        <?php endif; ?>
+                                        <?php if ($doc['photo_back']): ?>
+                                            <img src="<?= base_url('employees/id-photo/' . $doc['id'] . '/back') ?>"
+                                                class="ts-id-thumb"
+                                                style="width:60px;height:40px;object-fit:cover;border-radius:4px;
+                                    border:1px solid var(--ts-border);cursor:pointer;"
+                                                onclick="showIdPhotoModal('<?= base_url('employees/id-photo/' . $doc['id'] . '/back') ?>', '<?= esc($idTypeLabels[$type] ?? $type) ?> — Back')">
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
 
             <!-- Spouse -->
             <?php if ($employee['spouse_name']): ?>
+                <?php
+                $spouseAddressDisplay = trim(implode(', ', array_filter([
+                    $employee['spouse_address_street']   ?? '',
+                    $employee['spouse_address_barangay'] ?? '',
+                    $employee['spouse_address_city']     ?? '',
+                    $employee['spouse_address_province'] ?? '',
+                ])));
+                ?>
                 <div class="col-12 col-md-6">
                     <div class="ts-card mb-0">
                         <div class="ts-card-header">
@@ -261,7 +321,7 @@ $statusColor = [
                                 'Name'       => $employee['spouse_name'],
                                 'Occupation' => $employee['spouse_occupation'],
                                 'Contact'    => $employee['spouse_contact_number'],
-                                'Address'    => $employee['spouse_address'],
+                                'Address'    => $spouseAddressDisplay,
                             ];
                             foreach ($spouseFields as $label => $value): ?>
                                 <dt class="col-4 text-muted-sm py-1 border-bottom border-light">
@@ -278,6 +338,14 @@ $statusColor = [
 
             <!-- Parents -->
             <?php if ($employee['father_name'] || $employee['mother_name']): ?>
+                <?php
+                $parentsAddressDisplay = trim(implode(', ', array_filter([
+                    $employee['parents_address_street']   ?? '',
+                    $employee['parents_address_barangay'] ?? '',
+                    $employee['parents_address_city']     ?? '',
+                    $employee['parents_address_province'] ?? '',
+                ])));
+                ?>
                 <div class="col-12 col-md-6">
                     <div class="ts-card mb-0">
                         <div class="ts-card-header">
@@ -290,7 +358,7 @@ $statusColor = [
                                 "Father's Occ."  => $employee['father_occupation'],
                                 "Mother's Name"  => $employee['mother_name'],
                                 "Mother's Occ."  => $employee['mother_occupation'],
-                                'Address'        => $employee['parents_address'],
+                                'Address'        => $parentsAddressDisplay,
                             ];
                             foreach ($parentFields as $label => $value): ?>
                                 <dt class="col-5 text-muted-sm py-1 border-bottom border-light">
@@ -370,7 +438,15 @@ $statusColor = [
                                         <?= esc($ec['contact_number'] ?? '—') ?>
                                     </td>
                                     <td class="d-none d-lg-table-cell text-muted-sm">
-                                        <?= esc($ec['address'] ?? '—') ?>
+                                        <?php
+                                        $ecAddress = trim(implode(', ', array_filter([
+                                            $ec['street']   ?? '',
+                                            $ec['barangay'] ?? '',
+                                            $ec['city']     ?? '',
+                                            $ec['province'] ?? '',
+                                        ])));
+                                        echo esc($ecAddress ?: '—');
+                                        ?>
                                     </td>
                                     <td class="text-center">
                                         <div class="d-flex justify-content-center gap-1">
@@ -652,7 +728,15 @@ $statusColor = [
                                         <?= esc($ref['telephone'] ?? '—') ?>
                                     </td>
                                     <td class="d-none d-lg-table-cell text-muted-sm">
-                                        <?= esc($ref['address'] ?? '—') ?>
+                                        <?php
+                                        $refAddress = trim(implode(', ', array_filter([
+                                            $ref['street']   ?? '',
+                                            $ref['barangay'] ?? '',
+                                            $ref['city']     ?? '',
+                                            $ref['province'] ?? '',
+                                        ])));
+                                        echo esc($refAddress ?: '—');
+                                        ?>
                                     </td>
                                     <td class="text-center">
                                         <div class="d-flex justify-content-center gap-1">
@@ -696,7 +780,7 @@ $statusColor = [
             </div>
             <form id="emergencyForm"
                 action="<?= base_url("/employees/{$employee['id']}/emergency/store") ?>"
-                method="post">
+                method="post" data-employee-id="<?= $employee['id'] ?>">
                 <?= csrf_field() ?>
                 <input type="hidden" name="_method" id="emergencyMethod" value="">
                 <div class="modal-body">
@@ -726,11 +810,14 @@ $statusColor = [
                             <input type="text" name="contact_number" id="ec_contact_number"
                                 class="form-control form-control-sm">
                         </div>
+
                         <div class="col-12">
-                            <label class="ts-form-label">Address</label>
-                            <textarea name="address" id="ec_address"
-                                class="form-control form-control-sm" rows="2"></textarea>
+                            <?= view('partials/address_fields', [
+                                'prefix' => 'ec_address',
+                                'label'  => 'Address',
+                            ]) ?>
                         </div>
+
                         <div class="col-12 col-sm-4">
                             <label class="ts-form-label">Priority</label>
                             <select name="sort_order" id="ec_sort_order"
@@ -766,7 +853,7 @@ $statusColor = [
             </div>
             <form id="childForm"
                 action="<?= base_url("/employees/{$employee['id']}/child/store") ?>"
-                method="post">
+                method="post" data-employee-id="<?= $employee['id'] ?>">
                 <?= csrf_field() ?>
                 <div class="modal-body">
                     <div class="row g-3">
@@ -795,6 +882,22 @@ $statusColor = [
     </div>
 </div>
 
+<!-- ID Photo Preview Modal -->
+<div class="modal fade" id="modalIdPhoto" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title fw-600" id="idPhotoModalTitle">ID Photo</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="idPhotoModalImage" src="" alt="ID Photo"
+                    style="max-width:100%;max-height:70vh;border-radius:6px;">
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Add Education -->
 <div class="modal fade" id="modalAddEducation" tabindex="-1">
     <div class="modal-dialog modal-fullscreen-sm-down">
@@ -808,7 +911,7 @@ $statusColor = [
             </div>
             <form id="educationForm"
                 action="<?= base_url("/employees/{$employee['id']}/education/store") ?>"
-                method="post">
+                method="post" data-employee-id="<?= $employee['id'] ?>">
                 <?= csrf_field() ?>
                 <div class="modal-body">
                     <div class="row g-3">
@@ -860,7 +963,7 @@ $statusColor = [
             </div>
             <form id="historyForm"
                 action="<?= base_url("/employees/{$employee['id']}/history/store") ?>"
-                method="post">
+                method="post" data-employee-id="<?= $employee['id'] ?>">
                 <?= csrf_field() ?>
                 <div class="modal-body">
                     <div class="row g-3">
@@ -913,7 +1016,7 @@ $statusColor = [
             </div>
             <form id="referenceForm"
                 action="<?= base_url("/employees/{$employee['id']}/reference/store") ?>"
-                method="post">
+                method="post" data-employee-id="<?= $employee['id'] ?>">
                 <?= csrf_field() ?>
                 <div class="modal-body">
                     <div class="row g-3">
@@ -932,10 +1035,12 @@ $statusColor = [
                             <input type="text" name="telephone" id="ref_telephone"
                                 class="form-control form-control-sm">
                         </div>
+
                         <div class="col-12">
-                            <label class="ts-form-label">Address</label>
-                            <textarea name="address" id="ref_address"
-                                class="form-control form-control-sm" rows="2"></textarea>
+                            <?= view('partials/address_fields', [
+                                'prefix' => 'ref_address',
+                                'label'  => 'Address',
+                            ]) ?>
                         </div>
                     </div>
                 </div>
@@ -954,5 +1059,9 @@ $statusColor = [
 <?= $this->endSection() ?>
 
 <?= $this->section('scripts') ?>
+<script>
+    window.TS_BASE_URL = "<?= base_url('/') ?>";
+</script>
+<script src="<?= base_url('assets/js/address-component.js') ?>"></script>
 <script src="<?= base_url('assets/js/employees.js') ?>"></script>
 <?= $this->endSection() ?>
