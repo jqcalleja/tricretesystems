@@ -260,8 +260,6 @@
             });
         }
 
-        // syncHidden();
-
         const groupApi = {
             getParts: function () {
                 return {
