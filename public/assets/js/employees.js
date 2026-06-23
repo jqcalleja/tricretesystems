@@ -64,17 +64,18 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('ec_contact_number').value = data.contact_number || '';
         document.getElementById('ec_sort_order').value = data.sort_order || 1;
 
-        // Populate address combobox group (province/city/barangay/street)
-        if (window.TricreteAddress) {
-            const group = window.TricreteAddress.initAddressGroup('ec_address');
-            if (group) {
-                group.setParts({
-                    province: data.province || '',
-                    city: data.city || '',
-                    barangay: data.barangay || '',
-                    street: data.street || ''
-                });
-            }
+        // Pre-fill address combobox — province/city/barangay come from the
+        // joined addresses table; street comes from emergency_contacts directly
+        const ecGroup = window.TricreteAddressGroups
+            ? window.TricreteAddressGroups['ec_address']
+            : null;
+        if (ecGroup) {
+            ecGroup.setParts({
+                province: data.province || '',
+                city: data.city || '',
+                barangay: data.barangay || '',
+                street: data.address_street || ''
+            });
         }
 
         bootstrap.Modal.getOrCreateInstance(
@@ -209,17 +210,17 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('ref_occupation').value = data.occupation || '';
         document.getElementById('ref_telephone').value = data.telephone || '';
 
-        // Populate address combobox group
-        if (window.TricreteAddress) {
-            const group = window.TricreteAddress.initAddressGroup('ref_address');
-            if (group) {
-                group.setParts({
-                    province: data.province || '',
-                    city: data.city || '',
-                    barangay: data.barangay || '',
-                    street: data.street || ''
-                });
-            }
+        // Pre-fill address combobox
+        const refGroup = window.TricreteAddressGroups
+            ? window.TricreteAddressGroups['ref_address']
+            : null;
+        if (refGroup) {
+            refGroup.setParts({
+                province: data.province || '',
+                city: data.city || '',
+                barangay: data.barangay || '',
+                street: data.address_street || ''
+            });
         }
 
         bootstrap.Modal.getOrCreateInstance(

@@ -205,6 +205,8 @@ a:hover {
 }
 
 .ts-nav {
+    list-style: none;
+    margin: 0;
     overflow: hidden;
     padding-top: 4px;
     display: grid;
@@ -240,12 +242,6 @@ a:hover {
 }
 
 /* Nav list */
-.ts-nav {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
 .ts-nav-item {
     position: relative;
 }

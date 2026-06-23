@@ -255,11 +255,12 @@
 
         if (streetInput) {
             streetInput.addEventListener('input', function () {
+                syncHidden();
                 notifyChanged();
             });
         }
 
-        syncHidden();
+        // syncHidden();
 
         const groupApi = {
             getParts: function () {

@@ -62,7 +62,7 @@ $statusColor = [
                     <?= esc($employee['employment_status']) ?>
                 </span>
                 <?php if ($employee['is_active']): ?>
-                    <span class="ts-badge green">Active</span>
+                    <span class="ts-badge teal">Active</span>
                 <?php else: ?>
                     <span class="ts-badge red">Inactive</span>
                 <?php endif; ?>
@@ -440,10 +440,10 @@ $statusColor = [
                                     <td class="d-none d-lg-table-cell text-muted-sm">
                                         <?php
                                         $ecAddress = trim(implode(', ', array_filter([
-                                            $ec['street']   ?? '',
-                                            $ec['barangay'] ?? '',
-                                            $ec['city']     ?? '',
-                                            $ec['province'] ?? '',
+                                            $ec['address_street'] ?? '',
+                                            $ec['barangay']       ?? '',
+                                            $ec['city']           ?? '',
+                                            $ec['province']       ?? '',
                                         ])));
                                         echo esc($ecAddress ?: '—');
                                         ?>
@@ -730,10 +730,10 @@ $statusColor = [
                                     <td class="d-none d-lg-table-cell text-muted-sm">
                                         <?php
                                         $refAddress = trim(implode(', ', array_filter([
-                                            $ref['street']   ?? '',
-                                            $ref['barangay'] ?? '',
-                                            $ref['city']     ?? '',
-                                            $ref['province'] ?? '',
+                                            $ref['address_street'] ?? '',
+                                            $ref['barangay']       ?? '',
+                                            $ref['city']           ?? '',
+                                            $ref['province']       ?? '',
                                         ])));
                                         echo esc($refAddress ?: '—');
                                         ?>
