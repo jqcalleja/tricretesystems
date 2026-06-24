@@ -126,4 +126,4 @@ _modules/*
 /phpunit.xml
 
 # My own ignore list
-tricrete.zip
+*.zip
