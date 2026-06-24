@@ -7,10 +7,11 @@ on:
 
 jobs:
   deploy:
+    name: FTP Deploy
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Deploy via FTP
