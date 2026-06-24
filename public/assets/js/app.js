@@ -216,4 +216,13 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+    // ----------------------------------------------------------
+    // 9. Disable browser autocomplete suggestions on all form inputs
+    // ----------------------------------------------------------
+    document.querySelectorAll('input, textarea').forEach(function (el) {
+        if (el.getAttribute('autocomplete') === null) {
+            el.setAttribute('autocomplete', 'off');
+        }
+    });
+
 });

@@ -44,3 +44,11 @@ $routes->get('/employees/(:num)/history/delete/(:num)',        'Employees::delet
 $routes->post('/employees/(:num)/reference/store',              'Employees::storeReference/$1');
 $routes->post('/employees/(:num)/reference/update/(:num)',      'Employees::updateReference/$1/$2');
 $routes->get('/employees/(:num)/reference/delete/(:num)',      'Employees::deleteReference/$1/$2');
+
+// Projects Module
+$routes->get('/projects',                    'Projects::index');
+$routes->get('/projects/create',             'Projects::create');
+$routes->post('/projects/store',             'Projects::store');
+$routes->get('/projects/view/(:num)',        'Projects::view/$1');
+$routes->get('/projects/edit/(:num)',        'Projects::edit/$1');
+$routes->post('/projects/update/(:num)',     'Projects::update/$1');
