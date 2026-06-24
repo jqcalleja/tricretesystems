@@ -27,6 +27,7 @@ jobs:
             **/node_modules/**
             .env
             .env.example
+            .zip
             writable/logs/*
             writable/cache/*
             writable/session/*
