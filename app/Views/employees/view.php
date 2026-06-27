@@ -2,14 +2,16 @@
 
 <?php
 /**
- * @var array $employee     Employee record with joined position/department names
- * @var int    $age         Calculated age from date_of_birth
- * @var array $emergency    Emergency contacts for this employee
- * @var array $children     Children records for this employee
- * @var array $education    Educational background records
- * @var array $history      Employment history records
- * @var array $references   Character reference records
- * @var array $idDocuments  Uploaded images for Government IDs
+ * @var array    $employee     Employee record with joined position/department names
+ * @var int      $age          Calculated age from date_of_birth
+ * @var array    $emergency    Emergency contacts for this employee
+ * @var array    $children     Children records for this employee
+ * @var array    $education    Educational background records
+ * @var array    $history      Employment history records
+ * @var array    $references   Character reference records
+ * @var array    $idDocuments  Uploaded images for Government IDs
+ * @var array    $otherIds     Other government ID records
+ * @var array    $prcLicenses  PRC license records
  */
 ?>
 
@@ -90,7 +92,7 @@ $statusColor = [
 </div>
 
 <!-- ── Tabs ── -->
-<ul class="nav nav-tabs mb-3 flex-nowrap overflow-auto" id="profileTabs" role="tablist"
+<ul class="nav nav-tabs mb-3 flex-wrap overflow-none" id="profileTabs" role="tablist"
     style="white-space:nowrap;">
     <li class="nav-item">
         <button class="nav-link active" data-bs-toggle="tab"
@@ -131,6 +133,20 @@ $statusColor = [
             data-bs-target="#tabReferences" type="button">
             <?= svg_icon('users', 'me-1', '14') ?> References
             <span class="ts-badge gray ms-1"><?= count($references) ?></span>
+        </button>
+    </li>
+    <li class="nav-item" id="other-ids">
+        <button class="nav-link" data-bs-toggle="tab"
+            data-bs-target="#tabOtherIds" type="button">
+            <?= svg_icon('id-card', 'me-1', '14') ?> Other IDs
+            <span class="ts-badge gray ms-1"><?= count($otherIds) ?></span>
+        </button>
+    </li>
+    <li class="nav-item" id="prc">
+        <button class="nav-link" data-bs-toggle="tab"
+            data-bs-target="#tabPrc" type="button">
+            <?= svg_icon('reports', 'me-1', '14') ?> PRC Licenses
+            <span class="ts-badge gray ms-1"><?= count($prcLicenses) ?></span>
         </button>
     </li>
 </ul>
@@ -406,12 +422,11 @@ $statusColor = [
             </div>
 
             <?php if (empty($emergency)): ?>
-                <div class="ts-empty">
+                <div class="ts-empty" data-empty-for="emergencyBody">
                     <?= svg_icon('bell', '', '36') ?>
                     <p>No emergency contacts on record.</p>
                 </div>
-            <?php else: ?>
-                <div class="ts-table-wrap" style="border:none;">
+                <div class="ts-table-wrap d-none" data-table-for="emergencyBody" style="border:none;">
                     <table class="ts-table">
                         <thead>
                             <tr>
@@ -423,7 +438,23 @@ $statusColor = [
                                 <th class="text-center">Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="emergencyBody"></tbody>
+                    </table>
+                </div>
+            <?php else: ?>
+                <div class="ts-table-wrap" data-table-for="emergencyBody" style="border:none;">
+                    <table class="ts-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th class="d-none d-md-table-cell">Relationship</th>
+                                <th class="d-none d-md-table-cell">Contact No.</th>
+                                <th class="d-none d-lg-table-cell">Address</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="emergencyBody">
                             <?php foreach ($emergency as $ec): ?>
                                 <tr>
                                     <td><?= $ec['sort_order'] ?></td>
@@ -489,12 +520,11 @@ $statusColor = [
             </div>
 
             <?php if (empty($children)): ?>
-                <div class="ts-empty">
+                <div class="ts-empty" data-empty-for="childBody">
                     <?= svg_icon('employees', '', '36') ?>
                     <p>No children on record.</p>
                 </div>
-            <?php else: ?>
-                <div class="ts-table-wrap" style="border:none;">
+                <div class="ts-table-wrap d-none" data-table-for="childBody" style="border:none;">
                     <table class="ts-table">
                         <thead>
                             <tr>
@@ -505,7 +535,22 @@ $statusColor = [
                                 <th class="text-center">Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="childBody"></tbody>
+                    </table>
+                </div>
+            <?php else: ?>
+                <div class="ts-table-wrap" data-table-for="childBody" style="border:none;">
+                    <table class="ts-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Birthday</th>
+                                <th>Age</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="childBody">
                             <?php foreach ($children as $i => $child): ?>
                                 <tr>
                                     <td><?= $i + 1 ?></td>
@@ -559,12 +604,11 @@ $statusColor = [
             </div>
 
             <?php if (empty($education)): ?>
-                <div class="ts-empty">
+                <div class="ts-empty" data-empty-for="educationBody">
                     <?= svg_icon('reports', '', '36') ?>
                     <p>No educational background on record.</p>
                 </div>
-            <?php else: ?>
-                <div class="ts-table-wrap" style="border:none;">
+                <div class="ts-table-wrap d-none" data-table-for="educationBody" style="border:none;">
                     <table class="ts-table">
                         <thead>
                             <tr>
@@ -574,7 +618,21 @@ $statusColor = [
                                 <th class="text-center">Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="educationBody"></tbody>
+                    </table>
+                </div>
+            <?php else: ?>
+                <div class="ts-table-wrap" data-table-for="educationBody" style="border:none;">
+                    <table class="ts-table">
+                        <thead>
+                            <tr>
+                                <th>Level</th>
+                                <th>School / Institution</th>
+                                <th>Year Graduated</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="educationBody">
                             <?php foreach ($education as $edu): ?>
                                 <tr>
                                     <td>
@@ -627,12 +685,11 @@ $statusColor = [
             </div>
 
             <?php if (empty($history)): ?>
-                <div class="ts-empty">
+                <div class="ts-empty" data-empty-for="historyBody">
                     <?= svg_icon('clock', '', '36') ?>
                     <p>No employment history on record.</p>
                 </div>
-            <?php else: ?>
-                <div class="ts-table-wrap" style="border:none;">
+                <div class="ts-table-wrap d-none" data-table-for="historyBody" style="border:none;">
                     <table class="ts-table">
                         <thead>
                             <tr>
@@ -643,7 +700,22 @@ $statusColor = [
                                 <th class="text-center">Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="historyBody"></tbody>
+                    </table>
+                </div>
+            <?php else: ?>
+                <div class="ts-table-wrap" data-table-for="historyBody" style="border:none;">
+                    <table class="ts-table">
+                        <thead>
+                            <tr>
+                                <th>Company</th>
+                                <th class="d-none d-md-table-cell">Position</th>
+                                <th>From</th>
+                                <th>To</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyBody">
                             <?php foreach ($history as $hist): ?>
                                 <tr>
                                     <td class="fw-600">
@@ -701,12 +773,11 @@ $statusColor = [
             </div>
 
             <?php if (empty($references)): ?>
-                <div class="ts-empty">
+                <div class="ts-empty" data-empty-for="referenceBody">
                     <?= svg_icon('users', '', '36') ?>
                     <p>No character references on record.</p>
                 </div>
-            <?php else: ?>
-                <div class="ts-table-wrap" style="border:none;">
+                <div class="ts-table-wrap d-none" data-table-for="referenceBody" style="border:none;">
                     <table class="ts-table">
                         <thead>
                             <tr>
@@ -717,7 +788,22 @@ $statusColor = [
                                 <th class="text-center">Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="referenceBody"></tbody>
+                    </table>
+                </div>
+            <?php else: ?>
+                <div class="ts-table-wrap" data-table-for="referenceBody" style="border:none;">
+                    <table class="ts-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th class="d-none d-md-table-cell">Occupation</th>
+                                <th class="d-none d-md-table-cell">Telephone</th>
+                                <th class="d-none d-lg-table-cell">Address</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="referenceBody">
                             <?php foreach ($references as $ref): ?>
                                 <tr>
                                     <td class="fw-600"><?= esc($ref['name']) ?></td>
@@ -748,6 +834,165 @@ $statusColor = [
                                                 class="ts-icon-btn text-danger" title="Delete"
                                                 data-confirm-delete="<?= base_url("/employees/{$employee['id']}/reference/delete/{$ref['id']}") ?>"
                                                 data-label="this reference">
+                                                <?= svg_icon('delete', '', '15') ?>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+
+    <!-- ══ TAB 7: OTHER GOVERNMENT IDs ══ -->
+    <div class="tab-pane fade" id="tabOtherIds">
+        <div class="ts-card">
+            <div class="ts-card-header">
+                <h6 class="ts-card-title">
+                    <?= svg_icon('id-card', 'text-green', '15') ?>
+                    Other Government IDs
+                </h6>
+                <button class="btn btn-sm btn-ts-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalAddOtherId">
+                    <?= svg_icon('plus', 'me-1', '14') ?> Add ID
+                </button>
+            </div>
+
+            <?php if (empty($otherIds)): ?>
+                <div class="ts-empty" data-empty-for="otherIdsBody">
+                    <?= svg_icon('id-card', '', '36') ?>
+                    <p>No other ID records on file.</p>
+                </div>
+                <div class="ts-table-wrap d-none" data-table-for="otherIdsBody" style="border:none;">
+                    <table class="ts-table" id="otherIdsTable">
+                        <thead>
+                            <tr>
+                                <th>ID Type</th>
+                                <th>ID Number</th>
+                                <th>Expiration</th>
+                                <th class="d-none d-md-table-cell">Remarks</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="otherIdsBody"></tbody>
+                    </table>
+                </div>
+            <?php else: ?>
+                <div class="ts-table-wrap" data-table-for="otherIdsBody" style="border:none;">
+                    <table class="ts-table" id="otherIdsTable">
+                        <thead>
+                            <tr>
+                                <th>ID Type</th>
+                                <th>ID Number</th>
+                                <th>Expiration</th>
+                                <th class="d-none d-md-table-cell">Remarks</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="otherIdsBody">
+                            <?php foreach ($otherIds as $oid): ?>
+                                <tr id="other-id-row-<?= $oid['id'] ?>">
+                                    <td class="fw-600"><?= esc($oid['id_type']) ?></td>
+                                    <td class="tabular-nums"><?= esc($oid['id_number'] ?: '—') ?></td>
+                                    <td class="tabular-nums">
+                                        <?= $oid['expiration']
+                                            ? date('M d, Y', strtotime($oid['expiration']))
+                                            : '—' ?>
+                                    </td>
+                                    <td class="d-none d-md-table-cell text-muted-sm">
+                                        <?= esc($oid['remarks'] ?: '—') ?>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="d-flex justify-content-center gap-1">
+                                            <button class="ts-icon-btn" title="Edit"
+                                                onclick="editOtherId(<?= htmlspecialchars(json_encode($oid)) ?>)">
+                                                <?= svg_icon('edit', '', '15') ?>
+                                            </button>
+                                            <a href="<?= base_url("/employees/{$employee['id']}/other-id/delete/{$oid['id']}") ?>"
+                                                class="ts-icon-btn text-danger" title="Delete"
+                                                data-confirm-delete="<?= base_url("/employees/{$employee['id']}/other-id/delete/{$oid['id']}") ?>"
+                                                data-label="this ID record">
+                                                <?= svg_icon('delete', '', '15') ?>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+
+    <!-- ══ TAB 8: PRC LICENSES ══ -->
+    <div class="tab-pane fade" id="tabPrc">
+        <div class="ts-card">
+            <div class="ts-card-header">
+                <h6 class="ts-card-title">
+                    <?= svg_icon('reports', 'text-green', '15') ?>
+                    PRC Licenses
+                </h6>
+                <button class="btn btn-sm btn-ts-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalAddPrc">
+                    <?= svg_icon('plus', 'me-1', '14') ?> Add License
+                </button>
+            </div>
+
+            <?php if (empty($prcLicenses)): ?>
+                <div class="ts-empty" data-empty-for="prcBody">
+                    <?= svg_icon('reports', '', '36') ?>
+                    <p>No PRC license records on file.</p>
+                </div>
+                <div class="ts-table-wrap d-none" data-table-for="prcBody" style="border:none;">
+                    <table class="ts-table" id="prcTable">
+                        <thead>
+                            <tr>
+                                <th>Profession / Board Exam</th>
+                                <th>License No.</th>
+                                <th>Expiration</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="prcBody"></tbody>
+                    </table>
+                </div>
+            <?php else: ?>
+                <div class="ts-table-wrap" data-table-for="prcBody" style="border:none;">
+                    <table class="ts-table" id="prcTable">
+                        <thead>
+                            <tr>
+                                <th>Profession / Board Exam</th>
+                                <th>License No.</th>
+                                <th>Expiration</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="prcBody">
+                            <?php foreach ($prcLicenses as $prc): ?>
+                                <tr id="prc-row-<?= $prc['id'] ?>">
+                                    <td class="fw-600"><?= esc($prc['profession']) ?></td>
+                                    <td class="tabular-nums"><?= esc($prc['license_number'] ?: '—') ?></td>
+                                    <td class="tabular-nums">
+                                        <?= $prc['expiration']
+                                            ? date('M d, Y', strtotime($prc['expiration']))
+                                            : '—' ?>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="d-flex justify-content-center gap-1">
+                                            <button class="ts-icon-btn" title="Edit"
+                                                onclick="editPrc(<?= htmlspecialchars(json_encode($prc)) ?>)">
+                                                <?= svg_icon('edit', '', '15') ?>
+                                            </button>
+                                            <a href="<?= base_url("/employees/{$employee['id']}/prc/delete/{$prc['id']}") ?>"
+                                                class="ts-icon-btn text-danger" title="Delete"
+                                                data-confirm-delete="<?= base_url("/employees/{$employee['id']}/prc/delete/{$prc['id']}") ?>"
+                                                data-label="this PRC license">
                                                 <?= svg_icon('delete', '', '15') ?>
                                             </a>
                                         </div>
@@ -827,10 +1072,15 @@ $statusColor = [
                             </select>
                         </div>
                     </div>
+                    <div id="emergencyErrors" class="alert alert-danger mt-2 d-none" style="font-size:12.5px;"></div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary btn-sm"
-                        data-bs-dismiss="modal">Cancel</button>
+                        data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-outline-primary btn-sm"
+                        id="btnEmergencyAddAnother">
+                        <?= svg_icon('plus', 'me-1', '13') ?> Add Another
+                    </button>
                     <button type="submit" class="btn btn-ts-primary btn-sm">
                         <?= svg_icon('save', 'me-1', '14') ?> Save Contact
                     </button>
@@ -869,10 +1119,15 @@ $statusColor = [
                                 placeholder="YYYY-MM-DD">
                         </div>
                     </div>
+                    <div id="childErrors" class="alert alert-danger mt-2 d-none" style="font-size:12.5px;"></div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary btn-sm"
-                        data-bs-dismiss="modal">Cancel</button>
+                        data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-outline-primary btn-sm"
+                        id="btnChildAddAnother">
+                        <?= svg_icon('plus', 'me-1', '13') ?> Add Another
+                    </button>
                     <button type="submit" class="btn btn-ts-primary btn-sm">
                         <?= svg_icon('save', 'me-1', '14') ?> Save
                     </button>
@@ -937,10 +1192,15 @@ $statusColor = [
                                 placeholder="e.g. 2005">
                         </div>
                     </div>
+                    <div id="educationErrors" class="alert alert-danger mt-2 d-none" style="font-size:12.5px;"></div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary btn-sm"
-                        data-bs-dismiss="modal">Cancel</button>
+                        data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-outline-primary btn-sm"
+                        id="btnEducationAddAnother">
+                        <?= svg_icon('plus', 'me-1', '13') ?> Add Another
+                    </button>
                     <button type="submit" class="btn btn-ts-primary btn-sm">
                         <?= svg_icon('save', 'me-1', '14') ?> Save
                     </button>
@@ -990,10 +1250,15 @@ $statusColor = [
                                 placeholder="YYYY-MM-DD (leave blank if current)">
                         </div>
                     </div>
+                    <div id="historyErrors" class="alert alert-danger mt-2 d-none" style="font-size:12.5px;"></div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary btn-sm"
-                        data-bs-dismiss="modal">Cancel</button>
+                        data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-outline-primary btn-sm"
+                        id="btnHistoryAddAnother">
+                        <?= svg_icon('plus', 'me-1', '13') ?> Add Another
+                    </button>
                     <button type="submit" class="btn btn-ts-primary btn-sm">
                         <?= svg_icon('save', 'me-1', '14') ?> Save
                     </button>
@@ -1043,11 +1308,137 @@ $statusColor = [
                             ]) ?>
                         </div>
                     </div>
+                    <div id="referenceErrors" class="alert alert-danger mt-2 d-none" style="font-size:12.5px;"></div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary btn-sm"
-                        data-bs-dismiss="modal">Cancel</button>
+                        data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-outline-primary btn-sm"
+                        id="btnReferenceAddAnother">
+                        <?= svg_icon('plus', 'me-1', '13') ?> Add Another
+                    </button>
                     <button type="submit" class="btn btn-ts-primary btn-sm">
+                        <?= svg_icon('save', 'me-1', '14') ?> Save
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Add Other ID -->
+<div class="modal fade" id="modalAddOtherId" tabindex="-1">
+    <div class="modal-dialog modal-fullscreen-sm-down">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title fw-600">
+                    <?= svg_icon('id-card', 'me-2', '16') ?>
+                    <span id="otherIdModalTitle">Add Government ID</span>
+                </h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="otherIdForm"
+                action="<?= base_url("/employees/{$employee['id']}/other-id/store") ?>"
+                method="post"
+                data-employee-id="<?= $employee['id'] ?>">
+                <?= csrf_field() ?>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="ts-form-label">ID Type <span class="text-danger">*</span></label>
+                            <select name="id_type" id="otherId_type"
+                                class="form-select form-select-sm" required>
+                                <option value="">— Select ID Type —</option>
+                                <?php foreach (\App\Models\EmployeeOtherIdModel::ID_TYPES as $idType): ?>
+                                    <option value="<?= esc($idType) ?>"><?= esc($idType) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <label class="ts-form-label">ID / Document Number</label>
+                            <input type="text" name="id_number" id="otherId_number"
+                                class="form-control form-control-sm">
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <label class="ts-form-label">Expiration Date</label>
+                            <input type="text" name="expiration" id="otherId_expiration"
+                                class="form-control form-control-sm flatpickr"
+                                placeholder="YYYY-MM-DD">
+                        </div>
+                        <div class="col-12">
+                            <label class="ts-form-label">Remarks</label>
+                            <input type="text" name="remarks" id="otherId_remarks"
+                                class="form-control form-control-sm"
+                                placeholder="e.g. Valid, Expired, Lost">
+                        </div>
+                    </div>
+                    <div id="otherIdErrors" class="alert alert-danger mt-2 d-none"
+                        style="font-size:12.5px;"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary btn-sm"
+                        data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-outline-primary btn-sm"
+                        id="btnOtherIdAddAnother">
+                        <?= svg_icon('plus', 'me-1', '13') ?> Add Another
+                    </button>
+                    <button type="submit" class="btn btn-ts-primary btn-sm"
+                        id="btnOtherIdSave">
+                        <?= svg_icon('save', 'me-1', '14') ?> Save
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Add PRC License -->
+<div class="modal fade" id="modalAddPrc" tabindex="-1">
+    <div class="modal-dialog modal-fullscreen-sm-down">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title fw-600">
+                    <?= svg_icon('reports', 'me-2', '16') ?>
+                    <span id="prcModalTitle">Add PRC License</span>
+                </h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="prcForm"
+                action="<?= base_url("/employees/{$employee['id']}/prc/store") ?>"
+                method="post"
+                data-employee-id="<?= $employee['id'] ?>">
+                <?= csrf_field() ?>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="ts-form-label">Profession / Board Exam Title <span class="text-danger">*</span></label>
+                            <input type="text" name="profession" id="prc_profession"
+                                class="form-control form-control-sm" required>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <label class="ts-form-label">PRC License Number</label>
+                            <input type="text" name="license_number" id="prc_license_number"
+                                class="form-control form-control-sm">
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <label class="ts-form-label">Expiration Date</label>
+                            <input type="text" name="expiration" id="prc_expiration"
+                                class="form-control form-control-sm flatpickr"
+                                placeholder="YYYY-MM-DD">
+                        </div>
+                    </div>
+                    <div id="prcErrors" class="alert alert-danger mt-2 d-none"
+                        style="font-size:12.5px;"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary btn-sm"
+                        data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-outline-primary btn-sm"
+                        id="btnPrcAddAnother">
+                        <?= svg_icon('plus', 'me-1', '13') ?> Add Another
+                    </button>
+                    <button type="submit" class="btn btn-ts-primary btn-sm"
+                        id="btnPrcSave">
                         <?= svg_icon('save', 'me-1', '14') ?> Save
                     </button>
                 </div>
@@ -1061,6 +1452,32 @@ $statusColor = [
 <?= $this->section('scripts') ?>
 <script>
     window.TS_BASE_URL = "<?= base_url('/') ?>";
+
+    // Restore active tab from hash on page load
+    // Handles redirects from store/update/delete that append #tabName to the URL
+    (function() {
+        const hash = window.location.hash;
+        if (!hash) return;
+
+        // Map URL hash fragments to Bootstrap tab targets
+        const hashMap = {
+            '#emergency': '#tabEmergency',
+            '#children': '#tabChildren',
+            '#education': '#tabEducation',
+            '#history': '#tabHistory',
+            '#references': '#tabReferences',
+            '#other-ids': '#tabOtherIds',
+            '#prc': '#tabPrc',
+        };
+
+        const target = hashMap[hash];
+        if (!target) return;
+
+        const tabEl = document.querySelector('[data-bs-target="' + target + '"]');
+        if (tabEl) {
+            bootstrap.Tab.getOrCreateInstance(tabEl).show();
+        }
+    })();
 </script>
 <script src="<?= base_url('assets/js/address-component.js') ?>"></script>
 <script src="<?= base_url('assets/js/employees.js') ?>"></script>

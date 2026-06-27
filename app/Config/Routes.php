@@ -45,6 +45,16 @@ $routes->post('/employees/(:num)/reference/store',              'Employees::stor
 $routes->post('/employees/(:num)/reference/update/(:num)',      'Employees::updateReference/$1/$2');
 $routes->get('/employees/(:num)/reference/delete/(:num)',      'Employees::deleteReference/$1/$2');
 
+// Other IDs
+$routes->post('/employees/(:num)/other-id/store',           'Employees::storeOtherId/$1');
+$routes->post('/employees/(:num)/other-id/update/(:num)',   'Employees::updateOtherId/$1/$2');
+$routes->get('/employees/(:num)/other-id/delete/(:num)',    'Employees::deleteOtherId/$1/$2');
+
+// PRC Licenses
+$routes->post('/employees/(:num)/prc/store',                'Employees::storePrc/$1');
+$routes->post('/employees/(:num)/prc/update/(:num)',        'Employees::updatePrc/$1/$2');
+$routes->get('/employees/(:num)/prc/delete/(:num)',         'Employees::deletePrc/$1/$2');
+
 // Projects Module
 $routes->get('/projects',                    'Projects::index');
 $routes->get('/projects/create',             'Projects::create');

@@ -12,6 +12,8 @@ use App\Models\DepartmentModel;
 use App\Models\PositionModel;
 use App\Models\AddressModel;
 use App\Models\EmployeeIdDocumentModel;
+use App\Models\EmployeeOtherIdModel;
+use App\Models\EmployeePrcLicenseModel;
 
 class Employees extends BaseController
 {
@@ -25,6 +27,8 @@ class Employees extends BaseController
     protected PositionModel              $positionModel;
     protected AddressModel               $addressModel;
     protected EmployeeIdDocumentModel    $idDocumentModel;
+    protected EmployeeOtherIdModel       $otherIdModel;
+    protected EmployeePrcLicenseModel    $prcModel;
 
     public function __construct()
     {
@@ -38,6 +42,8 @@ class Employees extends BaseController
         $this->positionModel   = new PositionModel();
         $this->addressModel    = new AddressModel();
         $this->idDocumentModel = new EmployeeIdDocumentModel();
+        $this->otherIdModel    = new EmployeeOtherIdModel();
+        $this->prcModel        = new EmployeePrcLicenseModel();
     }
 
     /**
@@ -248,6 +254,8 @@ class Employees extends BaseController
             'history'     => $this->historyModel->getByEmployee($id),
             'references'  => $this->referenceModel->getByEmployee($id),
             'idDocuments' => $this->idDocumentModel->getByEmployee($id),
+            'otherIds'    => $this->otherIdModel->getByEmployee($id),
+            'prcLicenses' => $this->prcModel->getByEmployee($id),
         ]);
     }
 
@@ -407,18 +415,20 @@ class Employees extends BaseController
     // ============================================================
     public function storeEmergency(int $employeeId)
     {
-        // Validate only the fields actually present in the submitted form.
-        // employee_id comes from the route, not POST, so it's excluded here
-        // and set directly on $data afterward.
         $rules = [
             'last_name'  => 'required|max_length[80]',
             'first_name' => 'required|max_length[80]',
         ];
 
         if (! $this->validate($rules)) {
-            return redirect()->back()
-                ->withInput()
-                ->with('error', 'Please fill in required fields.');
+            if ($this->request->isAJAX()) {
+                return $this->response->setJSON([
+                    'success' => false,
+                    'errors'  => $this->validator->getErrors(),
+                    'csrf'    => csrf_hash(),
+                ]);
+            }
+            return redirect()->back()->withInput()->with('error', 'Please fill in required fields.');
         }
 
         $addressId = $this->addressModel->findOrCreate(
@@ -438,7 +448,17 @@ class Employees extends BaseController
         ];
         $data = $this->uppercaseFields($data);
 
-        $this->emergencyModel->insert($data);
+        $newId = $this->emergencyModel->insert($data);
+
+        if ($this->request->isAJAX()) {
+            $row = $this->emergencyModel->getByEmployee($employeeId);
+            $row = array_values(array_filter($row, fn($r) => $r['id'] == $newId))[0] ?? null;
+            return $this->response->setJSON([
+                'success' => true,
+                'row'     => $row,
+                'csrf'    => csrf_hash(),
+            ]);
+        }
 
         return redirect()->to("/employees/view/{$employeeId}#emergency")
             ->with('success', 'Emergency contact added.');
@@ -478,10 +498,23 @@ class Employees extends BaseController
     }
 
     // ============================================================
-    // CHILDREN  (unchanged — no address fields)
+    // CHILDREN
     // ============================================================
     public function storeChild(int $employeeId)
     {
+        $rules = ['name' => 'required|max_length[150]'];
+
+        if (! $this->validate($rules)) {
+            if ($this->request->isAJAX()) {
+                return $this->response->setJSON([
+                    'success' => false,
+                    'errors'  => $this->validator->getErrors(),
+                    'csrf'    => csrf_hash(),
+                ]);
+            }
+            return redirect()->back()->withInput()->with('error', 'Please fill in required fields.');
+        }
+
         $data = [
             'employee_id' => $employeeId,
             'name'        => $this->request->getPost('name'),
@@ -489,7 +522,16 @@ class Employees extends BaseController
         ];
         $data = $this->uppercaseFields($data);
 
-        $this->childModel->insert($data);
+        $newId = $this->childModel->insert($data);
+        $row   = $this->childModel->find($newId);
+
+        if ($this->request->isAJAX()) {
+            return $this->response->setJSON([
+                'success' => true,
+                'row'     => $row,
+                'csrf'    => csrf_hash(),
+            ]);
+        }
 
         return redirect()->to("/employees/view/{$employeeId}#children")
             ->with('success', 'Child record added.');
@@ -518,19 +560,41 @@ class Employees extends BaseController
     }
 
     // ============================================================
-    // EDUCATION  (unchanged — no address fields)
+    // EDUCATION
     // ============================================================
     public function storeEducation(int $employeeId)
     {
+        $rules = ['level' => 'required'];
+
+        if (! $this->validate($rules)) {
+            if ($this->request->isAJAX()) {
+                return $this->response->setJSON([
+                    'success' => false,
+                    'errors'  => $this->validator->getErrors(),
+                    'csrf'    => csrf_hash(),
+                ]);
+            }
+            return redirect()->back()->withInput()->with('error', 'Please fill in required fields.');
+        }
+
         $data = [
             'employee_id'    => $employeeId,
             'level'          => $this->request->getPost('level'),
             'school_name'    => $this->request->getPost('school_name'),
             'year_graduated' => $this->request->getPost('year_graduated') ?: null,
         ];
-        $data = $this->uppercaseFields($data, ['email_address', 'level']);
+        $data = $this->uppercaseFields($data, ['level']);
 
-        $this->educationModel->insert($data);
+        $newId = $this->educationModel->insert($data);
+        $row   = $this->educationModel->find($newId);
+
+        if ($this->request->isAJAX()) {
+            return $this->response->setJSON([
+                'success' => true,
+                'row'     => $row,
+                'csrf'    => csrf_hash(),
+            ]);
+        }
 
         return redirect()->to("/employees/view/{$employeeId}#education")
             ->with('success', 'Education record added.');
@@ -560,10 +624,23 @@ class Employees extends BaseController
     }
 
     // ============================================================
-    // EMPLOYMENT HISTORY  (unchanged — no address fields)
+    // EMPLOYMENT HISTORY
     // ============================================================
     public function storeHistory(int $employeeId)
     {
+        $rules = ['company_name' => 'required|max_length[150]'];
+
+        if (! $this->validate($rules)) {
+            if ($this->request->isAJAX()) {
+                return $this->response->setJSON([
+                    'success' => false,
+                    'errors'  => $this->validator->getErrors(),
+                    'csrf'    => csrf_hash(),
+                ]);
+            }
+            return redirect()->back()->withInput()->with('error', 'Please fill in required fields.');
+        }
+
         $data = [
             'employee_id'  => $employeeId,
             'company_name' => $this->request->getPost('company_name'),
@@ -573,7 +650,16 @@ class Employees extends BaseController
         ];
         $data = $this->uppercaseFields($data);
 
-        $this->historyModel->insert($data);
+        $newId = $this->historyModel->insert($data);
+        $row   = $this->historyModel->find($newId);
+
+        if ($this->request->isAJAX()) {
+            return $this->response->setJSON([
+                'success' => true,
+                'row'     => $row,
+                'csrf'    => csrf_hash(),
+            ]);
+        }
 
         return redirect()->to("/employees/view/{$employeeId}#history")
             ->with('success', 'Employment history added.');
@@ -608,14 +694,17 @@ class Employees extends BaseController
     // ============================================================
     public function storeReference(int $employeeId)
     {
-        $rules = [
-            'name' => 'required|max_length[150]',
-        ];
+        $rules = ['name' => 'required|max_length[150]'];
 
         if (! $this->validate($rules)) {
-            return redirect()->back()
-                ->withInput()
-                ->with('error', 'Please fill in required fields.');
+            if ($this->request->isAJAX()) {
+                return $this->response->setJSON([
+                    'success' => false,
+                    'errors'  => $this->validator->getErrors(),
+                    'csrf'    => csrf_hash(),
+                ]);
+            }
+            return redirect()->back()->withInput()->with('error', 'Please fill in required fields.');
         }
 
         $addressId = $this->addressModel->findOrCreate(
@@ -632,7 +721,16 @@ class Employees extends BaseController
         ];
         $data = $this->uppercaseFields($data);
 
-        $this->referenceModel->insert($data);
+        $newId = $this->referenceModel->insert($data);
+        $row   = $this->referenceModel->find($newId);
+
+        if ($this->request->isAJAX()) {
+            return $this->response->setJSON([
+                'success' => true,
+                'row'     => $row,
+                'csrf'    => csrf_hash(),
+            ]);
+        }
 
         return redirect()->to("/employees/view/{$employeeId}#references")
             ->with('success', 'Character reference added.');
@@ -666,6 +764,138 @@ class Employees extends BaseController
 
         return redirect()->to("/employees/view/{$employeeId}#references")
             ->with('success', 'Character reference removed.');
+    }
+
+    // ============================================================
+    // OTHER GOVERNMENT IDs
+    // ============================================================
+    public function storeOtherId(int $employeeId)
+    {
+        $rules = [
+            'id_type' => 'required',
+        ];
+
+        if (! $this->validate($rules)) {
+            if ($this->request->isAJAX()) {
+                return $this->response->setJSON([
+                    'success' => false,
+                    'errors'  => $this->validator->getErrors(),
+                    'csrf'    => csrf_hash(),
+                ]);
+            }
+            return redirect()->back()->with('error', 'Please fill in required fields.');
+        }
+
+        $data = [
+            'employee_id' => $employeeId,
+            'id_type'     => $this->request->getPost('id_type'),
+            'id_number'   => $this->request->getPost('id_number'),
+            'expiration'  => $this->request->getPost('expiration') ?: null,
+            'remarks'     => $this->request->getPost('remarks'),
+        ];
+        $data = $this->uppercaseFields($data, ['id_type']);
+
+        $newId = $this->otherIdModel->insert($data);
+        $row   = $this->otherIdModel->find($newId);
+
+        if ($this->request->isAJAX()) {
+            return $this->response->setJSON([
+                'success' => true,
+                'row'     => $row,
+                'csrf'    => csrf_hash(),
+            ]);
+        }
+
+        return redirect()->to("/employees/view/{$employeeId}#other-ids")
+            ->with('success', 'ID record added.');
+    }
+
+    public function updateOtherId(int $employeeId, int $otherIdId)
+    {
+        $data = [
+            'id_type'    => $this->request->getPost('id_type'),
+            'id_number'  => $this->request->getPost('id_number'),
+            'expiration' => $this->request->getPost('expiration') ?: null,
+            'remarks'    => $this->request->getPost('remarks'),
+        ];
+        $data = $this->uppercaseFields($data, ['id_type']);
+
+        $this->otherIdModel->update($otherIdId, $data);
+
+        return redirect()->to("/employees/view/{$employeeId}#other-ids")
+            ->with('success', 'ID record updated.');
+    }
+
+    public function deleteOtherId(int $employeeId, int $otherIdId)
+    {
+        $this->otherIdModel->delete($otherIdId);
+
+        return redirect()->to("/employees/view/{$employeeId}#other-ids")
+            ->with('success', 'ID record removed.');
+    }
+
+    // ============================================================
+    // PRC LICENSES
+    // ============================================================
+    public function storePrc(int $employeeId)
+    {
+        $rules = ['profession' => 'required|max_length[150]'];
+
+        if (! $this->validate($rules)) {
+            if ($this->request->isAJAX()) {
+                return $this->response->setJSON([
+                    'success' => false,
+                    'errors'  => $this->validator->getErrors(),
+                    'csrf'    => csrf_hash(),
+                ]);
+            }
+            return redirect()->back()->with('error', 'Please fill in required fields.');
+        }
+
+        $data = [
+            'employee_id'    => $employeeId,
+            'profession'     => $this->request->getPost('profession'),
+            'license_number' => $this->request->getPost('license_number'),
+            'expiration'     => $this->request->getPost('expiration') ?: null,
+        ];
+        $data = $this->uppercaseFields($data);
+
+        $newId = $this->prcModel->insert($data);
+        $row   = $this->prcModel->find($newId);
+
+        if ($this->request->isAJAX()) {
+            return $this->response->setJSON([
+                'success' => true,
+                'row'     => $row,
+                'csrf'    => csrf_hash(),
+            ]);
+        }
+
+        return redirect()->to("/employees/view/{$employeeId}#prc")
+            ->with('success', 'PRC license added.');
+    }
+
+    public function updatePrc(int $employeeId, int $prcId)
+    {
+        $data = [
+            'profession'     => $this->request->getPost('profession'),
+            'license_number' => $this->request->getPost('license_number'),
+            'expiration'     => $this->request->getPost('expiration') ?: null,
+        ];
+        $data = $this->uppercaseFields($data);
+
+        $this->prcModel->update($prcId, $data);
+
+        return redirect()->to("/employees/view/{$employeeId}#prc")
+            ->with('success', 'PRC license updated.');
+    }
+
+    public function deletePrc(int $employeeId, int $prcId)
+    {
+        $this->prcModel->delete($prcId);
+
+        return redirect()->to("/employees/view/{$employeeId}#prc")
+            ->with('success', 'PRC license removed.');
     }
 
     /**
