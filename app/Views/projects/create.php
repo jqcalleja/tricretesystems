@@ -159,37 +159,97 @@
                 </div>
             </div>
             <div class="col-12">
-                <label class="ts-form-label">Assigned Employees</label>
-                <div class="border rounded p-2" style="max-height:280px;overflow-y:auto;background:#FAFAFA;">
-                    <div class="row g-1">
+                <label class="ts-form-label">Project Employees</label>
+                <div class="project-assignment-picker">
+                    <div class="assignment-panel">
+                        <div class="assignment-panel-header">
+                            <span>Available Employees</span>
+                            <span class="ts-badge gray" id="availableEmployeeCount">0</span>
+                        </div>
+                        <div class="input-group input-group-sm mb-2">
+                            <span class="input-group-text bg-white">
+                                <?= svg_icon('search', '', '13') ?>
+                            </span>
+                            <input type="search" id="availableEmployeeSearch"
+                                class="form-control form-control-sm ts-no-uppercase"
+                                placeholder="Search available employees">
+                        </div>
+                        <div class="assignment-list" id="availableEmployeesList">
+                            <?php foreach ($employees as $emp):
+                                $empId = (int) $emp['id'];
+                                $isAssigned = in_array($empId, $oldAssignedIds, true);
+                                $isSelectedEngineer = $selectedSiteEngineerId === $empId;
+                                if ($isAssigned && ! $isSelectedEngineer) continue;
+                                $employeeName = trim($emp['last_name'] . ', ' . $emp['first_name']);
+                                $searchText = strtolower($employeeName . ' ' . $emp['employee_no']);
+                            ?>
+                                <label class="assignment-item <?= $isSelectedEngineer ? 'd-none' : '' ?>"
+                                    data-employee-item
+                                    data-employee-id="<?= $empId ?>"
+                                    data-engineer-hidden="<?= $isSelectedEngineer ? '1' : '0' ?>"
+                                    data-search="<?= esc($searchText, 'attr') ?>">
+                                    <input type="checkbox" class="form-check-input"
+                                        <?= $isSelectedEngineer ? 'disabled' : '' ?>>
+                                    <span>
+                                        <span class="fw-600"><?= esc($employeeName) ?></span>
+                                        <span class="text-muted-sm d-block"><?= esc($emp['employee_no']) ?></span>
+                                    </span>
+                                </label>
+                            <?php endforeach; ?>
+                        </div>
+                        <div class="assignment-empty d-none" data-empty-for="availableEmployeesList">
+                            No available employees found.
+                        </div>
+                    </div>
+
+                    <div class="assignment-actions">
+                        <button type="button" class="btn btn-ts-primary btn-sm" id="btnAddEmployees">
+                            <?= svg_icon('plus', 'me-1', '13') ?> Add
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm" id="btnRemoveEmployees">
+                            <?= svg_icon('x', 'me-1', '13') ?> Remove
+                        </button>
+                    </div>
+
+                    <div class="assignment-panel">
+                        <div class="assignment-panel-header">
+                            <span>Project Employees</span>
+                            <span class="ts-badge gray" id="assignedEmployeeCount">0</span>
+                        </div>
+                        <div class="input-group input-group-sm mb-2">
+                            <span class="input-group-text bg-white">
+                                <?= svg_icon('search', '', '13') ?>
+                            </span>
+                            <input type="search" id="assignedEmployeeSearch"
+                                class="form-control form-control-sm ts-no-uppercase"
+                                placeholder="Search project employees">
+                        </div>
+                        <div class="assignment-list" id="assignedEmployeesList">
                         <?php foreach ($employees as $emp):
                             $empId = (int) $emp['id'];
+                            $isAssigned = in_array($empId, $oldAssignedIds, true);
                             $isSelectedEngineer = $selectedSiteEngineerId === $empId;
+                            if (! $isAssigned || $isSelectedEngineer) continue;
+                            $employeeName = trim($emp['last_name'] . ', ' . $emp['first_name']);
+                            $searchText = strtolower($employeeName . ' ' . $emp['employee_no']);
                         ?>
-                            <div class="col-12 col-sm-6 col-md-4 <?= $isSelectedEngineer ? 'd-none' : '' ?>"
-                                data-employee-option="<?= $empId ?>">
-                                <div class="form-check">
-                                    <input type="checkbox"
-                                        class="form-check-input"
-                                        name="assigned_employees[]"
-                                        value="<?= $empId ?>"
-                                        id="emp_<?= $empId ?>"
-                                        <?= (! $isSelectedEngineer && in_array($empId, $oldAssignedIds, true)) ? 'checked' : '' ?>
-                                        <?= $isSelectedEngineer ? 'disabled' : '' ?>>
-                                    <label class="form-check-label"
-                                        for="emp_<?= $empId ?>"
-                                        style="font-size:12.5px;">
-                                        <span class="fw-600">
-                                            <?= esc($emp['last_name'] . ', ' . $emp['first_name']) ?>
-                                        </span>
-                                        <br>
-                                        <span class="text-muted-sm">
-                                            <?= esc($emp['employee_no']) ?>
-                                        </span>
-                                    </label>
-                                </div>
-                            </div>
+                            <label class="assignment-item"
+                                data-employee-item
+                                data-employee-id="<?= $empId ?>"
+                                data-search="<?= esc($searchText, 'attr') ?>">
+                                <input type="checkbox" class="form-check-input">
+                                <input type="hidden" name="assigned_employees[]"
+                                    value="<?= $empId ?>" data-assigned-input>
+                                <span>
+                                    <span class="fw-600"><?= esc($employeeName) ?></span>
+                                    <span class="text-muted-sm d-block"><?= esc($emp['employee_no']) ?></span>
+                                </span>
+                            </label>
                         <?php endforeach; ?>
+                        </div>
+                        <div class="assignment-empty d-none" data-empty-for="assignedEmployeesList">
+                            No project employees found.
+                        </div>
                     </div>
                 </div>
             </div>
@@ -242,29 +302,158 @@
         }
 
         const siteEngineerSelect = document.getElementById('siteEngineerSelect');
+        const availableList = document.getElementById('availableEmployeesList');
+        const assignedList = document.getElementById('assignedEmployeesList');
+        const availableSearch = document.getElementById('availableEmployeeSearch');
+        const assignedSearch = document.getElementById('assignedEmployeeSearch');
+        const addEmployeesBtn = document.getElementById('btnAddEmployees');
+        const removeEmployeesBtn = document.getElementById('btnRemoveEmployees');
+        const availableCount = document.getElementById('availableEmployeeCount');
+        const assignedCount = document.getElementById('assignedEmployeeCount');
 
-        function syncEngineerEmployeeList() {
-            if (!siteEngineerSelect) return;
+        function pickerItems(list) {
+            return Array.from(list.querySelectorAll('[data-employee-item]'));
+        }
 
-            const selectedId = siteEngineerSelect.value;
-            document.querySelectorAll('[data-employee-option]').forEach(function(row) {
-                const isSelectedEngineer = selectedId !== '' &&
-                    row.getAttribute('data-employee-option') === selectedId;
-                const checkbox = row.querySelector('input[type="checkbox"]');
-
-                if (checkbox) {
-                    if (isSelectedEngineer) checkbox.checked = false;
-                    checkbox.disabled = isSelectedEngineer;
-                }
-
-                row.classList.toggle('d-none', isSelectedEngineer);
+        function selectedPickerItems(list) {
+            return pickerItems(list).filter(function(item) {
+                const checkbox = item.querySelector('input[type="checkbox"]');
+                return checkbox && checkbox.checked && !item.classList.contains('d-none');
             });
         }
 
+        function ensureAssignedInput(item) {
+            if (item.querySelector('[data-assigned-input]')) return;
+
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'assigned_employees[]';
+            input.value = item.getAttribute('data-employee-id');
+            input.setAttribute('data-assigned-input', '');
+            item.insertBefore(input, item.querySelector('span'));
+        }
+
+        function removeAssignedInput(item) {
+            const input = item.querySelector('[data-assigned-input]');
+            if (input) input.remove();
+        }
+
+        function insertSorted(list, item) {
+            const itemSearch = item.getAttribute('data-search') || '';
+            const before = pickerItems(list).filter(function(existing) {
+                return existing !== item;
+            }).find(function(existing) {
+                return (existing.getAttribute('data-search') || '') > itemSearch;
+            });
+            list.insertBefore(item, before || null);
+        }
+
+        function movePickerItem(item, targetList) {
+            const checkbox = item.querySelector('input[type="checkbox"]');
+            if (checkbox) {
+                checkbox.checked = false;
+                checkbox.disabled = false;
+            }
+
+            if (targetList === assignedList) {
+                ensureAssignedInput(item);
+            } else {
+                removeAssignedInput(item);
+            }
+
+            insertSorted(targetList, item);
+        }
+
+        function applyPickerFilter(list, searchInput) {
+            const query = (searchInput ? searchInput.value : '').trim().toLowerCase();
+
+            pickerItems(list).forEach(function(item) {
+                const isEngineer = item.getAttribute('data-engineer-hidden') === '1';
+                const matches = !query || (item.getAttribute('data-search') || '').includes(query);
+                item.classList.toggle('d-none', isEngineer || !matches);
+            });
+        }
+
+        function visiblePickerCount(list) {
+            return pickerItems(list).filter(function(item) {
+                return !item.classList.contains('d-none');
+            }).length;
+        }
+
+        function refreshPickerState() {
+            if (!availableList || !assignedList) return;
+
+            applyPickerFilter(availableList, availableSearch);
+            applyPickerFilter(assignedList, assignedSearch);
+
+            const availableVisible = visiblePickerCount(availableList);
+            const assignedVisible = visiblePickerCount(assignedList);
+
+            if (availableCount) availableCount.textContent = availableVisible;
+            if (assignedCount) assignedCount.textContent = assignedVisible;
+
+            document.querySelectorAll('.project-assignment-picker [data-empty-for]').forEach(function(empty) {
+                const list = document.getElementById(empty.getAttribute('data-empty-for'));
+                if (!list) return;
+                empty.classList.toggle('d-none', visiblePickerCount(list) > 0);
+            });
+
+            if (addEmployeesBtn) addEmployeesBtn.disabled = selectedPickerItems(availableList).length === 0;
+            if (removeEmployeesBtn) removeEmployeesBtn.disabled = selectedPickerItems(assignedList).length === 0;
+        }
+
+        function syncEngineerEmployeeList() {
+            if (!availableList || !assignedList) return;
+
+            const selectedId = siteEngineerSelect ? siteEngineerSelect.value : '';
+            document.querySelectorAll('[data-employee-item]').forEach(function(item) {
+                const isSelectedEngineer = selectedId !== '' &&
+                    item.getAttribute('data-employee-id') === selectedId;
+                const checkbox = item.querySelector('input[type="checkbox"]');
+
+                item.setAttribute('data-engineer-hidden', isSelectedEngineer ? '1' : '0');
+
+                if (isSelectedEngineer) {
+                    movePickerItem(item, availableList);
+                    if (checkbox) checkbox.disabled = true;
+                } else if (checkbox) {
+                    checkbox.disabled = false;
+                }
+            });
+
+            refreshPickerState();
+        }
+
+        if (addEmployeesBtn) {
+            addEmployeesBtn.addEventListener('click', function() {
+                selectedPickerItems(availableList).forEach(function(item) {
+                    movePickerItem(item, assignedList);
+                });
+                refreshPickerState();
+            });
+        }
+
+        if (removeEmployeesBtn) {
+            removeEmployeesBtn.addEventListener('click', function() {
+                selectedPickerItems(assignedList).forEach(function(item) {
+                    movePickerItem(item, availableList);
+                });
+                refreshPickerState();
+            });
+        }
+
+        [availableList, assignedList].forEach(function(list) {
+            if (list) list.addEventListener('change', refreshPickerState);
+        });
+
+        [availableSearch, assignedSearch].forEach(function(input) {
+            if (input) input.addEventListener('input', refreshPickerState);
+        });
+
         if (siteEngineerSelect) {
             siteEngineerSelect.addEventListener('change', syncEngineerEmployeeList);
-            syncEngineerEmployeeList();
         }
+        syncEngineerEmployeeList();
 
         // Geocode button
         document.getElementById('btnGeocode').addEventListener('click', function() {
