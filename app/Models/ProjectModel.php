@@ -47,7 +47,7 @@ class ProjectModel extends Model
     {
         $builder = $this->db->table('projects p')
             ->select('p.*,
-                      COUNT(DISTINCT CASE WHEN pa.is_active = 1 THEN pa.employee_id END) AS worker_count,
+                      COUNT(DISTINCT CASE WHEN pa.is_active = 1 AND pa.is_site_engineer = 0 THEN pa.employee_id END) AS worker_count,
                       e.first_name AS site_engineer_first,
                       e.last_name  AS site_engineer_last,
                       e.photo      AS site_engineer_photo')

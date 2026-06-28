@@ -141,41 +141,51 @@
     </div>
 
     <!-- ── 3. Employee Assignment ── -->
+    <?php
+    $selectedSiteEngineerId = (int) old('site_engineer_id', $siteEngineerId);
+    $oldAssignedIds = old('assigned_employees', $assignedIds);
+    $oldAssignedIds = is_array($oldAssignedIds) ? array_map('intval', $oldAssignedIds) : [];
+    ?>
+
     <div class="ts-card">
         <p class="ts-section-title">Assigned Employees</p>
         <div class="row g-3">
             <div class="col-12 col-md-6">
                 <label class="ts-form-label">Site Engineer</label>
-                <select name="site_engineer_id" class="form-select form-select-sm">
+                <select name="site_engineer_id" id="siteEngineerSelect" class="form-select form-select-sm">
                     <option value="">— Select Site Engineer —</option>
                     <?php foreach ($employees as $emp): ?>
                         <option value="<?= $emp['id'] ?>"
-                            <?= old('site_engineer_id', $siteEngineerId) == $emp['id'] ? 'selected' : '' ?>>
+                            <?= $selectedSiteEngineerId === (int) $emp['id'] ? 'selected' : '' ?>>
                             <?= esc($emp['last_name'] . ', ' . $emp['first_name']) ?>
                             (<?= esc($emp['employee_no']) ?>)
                         </option>
                     <?php endforeach; ?>
                 </select>
                 <div class="text-muted-sm mt-1" style="font-size:11.5px;">
-                    The site engineer must also be included in the employee list below.
+                    The selected site engineer is saved separately and removed from the employee list below.
                 </div>
             </div>
             <div class="col-12">
                 <label class="ts-form-label">Assigned Employees</label>
                 <div class="border rounded p-2" style="max-height:280px;overflow-y:auto;background:#FAFAFA;">
                     <div class="row g-1">
-                        <?php foreach ($employees as $emp): ?>
-                            <div class="col-12 col-sm-6 col-md-4">
+                        <?php foreach ($employees as $emp):
+                            $empId = (int) $emp['id'];
+                            $isSelectedEngineer = $selectedSiteEngineerId === $empId;
+                        ?>
+                            <div class="col-12 col-sm-6 col-md-4 <?= $isSelectedEngineer ? 'd-none' : '' ?>"
+                                data-employee-option="<?= $empId ?>">
                                 <div class="form-check">
                                     <input type="checkbox"
                                         class="form-check-input"
                                         name="assigned_employees[]"
-                                        value="<?= $emp['id'] ?>"
-                                        id="emp_<?= $emp['id'] ?>"
-                                        <?= in_array($emp['id'], old('assigned_employees', $assignedIds))
-                                            ? 'checked' : '' ?>>
+                                        value="<?= $empId ?>"
+                                        id="emp_<?= $empId ?>"
+                                        <?= (! $isSelectedEngineer && in_array($empId, $oldAssignedIds, true)) ? 'checked' : '' ?>
+                                        <?= $isSelectedEngineer ? 'disabled' : '' ?>>
                                     <label class="form-check-label"
-                                        for="emp_<?= $emp['id'] ?>"
+                                        for="emp_<?= $empId ?>"
                                         style="font-size:12.5px;">
                                         <span class="fw-600">
                                             <?= esc($emp['last_name'] . ', ' . $emp['first_name']) ?>
@@ -236,6 +246,31 @@
             setTimeout(function() {
                 previewMap.invalidateSize();
             }, 100);
+        }
+
+        const siteEngineerSelect = document.getElementById('siteEngineerSelect');
+
+        function syncEngineerEmployeeList() {
+            if (!siteEngineerSelect) return;
+
+            const selectedId = siteEngineerSelect.value;
+            document.querySelectorAll('[data-employee-option]').forEach(function(row) {
+                const isSelectedEngineer = selectedId !== '' &&
+                    row.getAttribute('data-employee-option') === selectedId;
+                const checkbox = row.querySelector('input[type="checkbox"]');
+
+                if (checkbox) {
+                    if (isSelectedEngineer) checkbox.checked = false;
+                    checkbox.disabled = isSelectedEngineer;
+                }
+
+                row.classList.toggle('d-none', isSelectedEngineer);
+            });
+        }
+
+        if (siteEngineerSelect) {
+            siteEngineerSelect.addEventListener('change', syncEngineerEmployeeList);
+            syncEngineerEmployeeList();
         }
 
         document.getElementById('btnGeocode').addEventListener('click', function() {

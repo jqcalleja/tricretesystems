@@ -38,12 +38,14 @@ $segment = $uri->getSegment(1) ?? '';
                     </a>
                 </div>
                 <div class="ts-nav-item" role="listitem">
-                    <a href="<?= base_url('/attendance') ?>"
-                        class="ts-nav-link <?= $segment === 'attendance' ? 'active' : '' ?>"
-                        data-label="Attendance">
+                    <span class="ts-nav-link is-disabled"
+                        role="link"
+                        aria-disabled="true"
+                        data-label="Attendance (Coming soon)">
                         <span class="nav-icon"><?= svg_icon('attendance', '', '18') ?></span>
                         <span class="nav-label">Attendance (DTR)</span>
-                    </a>
+                        <span class="nav-status">Soon</span>
+                    </span>
                 </div>
                 <div class="ts-nav-item" role="listitem">
                     <a href="<?= base_url('/projects') ?>"
@@ -54,104 +56,123 @@ $segment = $uri->getSegment(1) ?? '';
                     </a>
                 </div>
                 <div class="ts-nav-item" role="listitem">
-                    <a href="<?= base_url('/reports') ?>"
-                        class="ts-nav-link <?= $segment === 'reports' ? 'active' : '' ?>"
-                        data-label="Reports">
+                    <span class="ts-nav-link is-disabled"
+                        role="link"
+                        aria-disabled="true"
+                        data-label="Reports (Coming soon)">
                         <span class="nav-icon"><?= svg_icon('reports', '', '18') ?></span>
                         <span class="nav-label">Reports</span>
-                    </a>
+                        <span class="nav-status">Soon</span>
+                    </span>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Tools & Equipment Module -->
-    <div class="ts-nav-group">
+    <div class="ts-nav-group ts-nav-group-disabled">
         <button type="button" class="ts-nav-label ts-nav-label-toggle" data-target="navGroupEquipment">
             <span>Tools &amp; Equipment</span>
+            <span class="ts-nav-group-status">Soon</span>
             <span class="ts-nav-label-chevron"><?= svg_icon('chevron-down', '', '12') ?></span>
         </button>
         <div class="ts-nav" id="navGroupEquipment" role="list">
             <div class="ts-nav-collapse-inner">
                 <div class="ts-nav-item" role="listitem">
-                    <a href="<?= base_url('/equipment') ?>"
-                        class="ts-nav-link <?= $segment === 'equipment' ? 'active' : '' ?>"
-                        data-label="Equipment">
+                    <span class="ts-nav-link is-disabled"
+                        role="link"
+                        aria-disabled="true"
+                        data-label="Equipment (Coming soon)">
                         <span class="nav-icon"><?= svg_icon('equipment', '', '18') ?></span>
                         <span class="nav-label">Equipment</span>
-                    </a>
+                        <span class="nav-status">Soon</span>
+                    </span>
                 </div>
                 <div class="ts-nav-item" role="listitem">
-                    <a href="<?= base_url('/inventory') ?>"
-                        class="ts-nav-link <?= $segment === 'inventory' ? 'active' : '' ?>"
-                        data-label="Inventory">
+                    <span class="ts-nav-link is-disabled"
+                        role="link"
+                        aria-disabled="true"
+                        data-label="Inventory (Coming soon)">
                         <span class="nav-icon"><?= svg_icon('inventory', '', '18') ?></span>
                         <span class="nav-label">Inventory</span>
-                    </a>
+                        <span class="nav-status">Soon</span>
+                    </span>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Accounting Module -->
-    <div class="ts-nav-group">
+    <div class="ts-nav-group ts-nav-group-disabled">
         <button type="button" class="ts-nav-label ts-nav-label-toggle" data-target="navGroupAccounting">
             <span>Accounting</span>
+            <span class="ts-nav-group-status">Soon</span>
             <span class="ts-nav-label-chevron"><?= svg_icon('chevron-down', '', '12') ?></span>
         </button>
         <div class="ts-nav" id="navGroupAccounting" role="list">
             <div class="ts-nav-collapse-inner">
                 <div class="ts-nav-item" role="listitem">
-                    <a href="<?= base_url('/accounting') ?>"
-                        class="ts-nav-link <?= $segment === 'accounting' ? 'active' : '' ?>"
-                        data-label="Accounting">
+                    <span class="ts-nav-link is-disabled"
+                        role="link"
+                        aria-disabled="true"
+                        data-label="Accounting (Coming soon)">
                         <span class="nav-icon"><?= svg_icon('accounting', '', '18') ?></span>
                         <span class="nav-label">Accounting</span>
-                    </a>
+                        <span class="nav-status">Soon</span>
+                    </span>
                 </div>
                 <div class="ts-nav-item" role="listitem">
-                    <a href="<?= base_url('/journal') ?>"
-                        class="ts-nav-link <?= $segment === 'journal' ? 'active' : '' ?>"
-                        data-label="Journal Entries">
+                    <span class="ts-nav-link is-disabled"
+                        role="link"
+                        aria-disabled="true"
+                        data-label="Journal Entries (Coming soon)">
                         <span class="nav-icon"><?= svg_icon('journal', '', '18') ?></span>
                         <span class="nav-label">Journal Entries</span>
-                    </a>
+                        <span class="nav-status">Soon</span>
+                    </span>
                 </div>
                 <div class="ts-nav-item" role="listitem">
-                    <a href="<?= base_url('/accounts') ?>"
-                        class="ts-nav-link <?= $segment === 'accounts' ? 'active' : '' ?>"
-                        data-label="Chart of Accounts">
+                    <span class="ts-nav-link is-disabled"
+                        role="link"
+                        aria-disabled="true"
+                        data-label="Chart of Accounts (Coming soon)">
                         <span class="nav-icon"><?= svg_icon('chart-of-accounts', '', '18') ?></span>
                         <span class="nav-label">Chart of Accounts</span>
-                    </a>
+                        <span class="nav-status">Soon</span>
+                    </span>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- System -->
-    <div class="ts-nav-group">
+    <div class="ts-nav-group ts-nav-group-disabled">
         <button type="button" class="ts-nav-label ts-nav-label-toggle" data-target="navGroupSystem">
             <span>System</span>
+            <span class="ts-nav-group-status">Soon</span>
             <span class="ts-nav-label-chevron"><?= svg_icon('chevron-down', '', '12') ?></span>
         </button>
         <div class="ts-nav" id="navGroupSystem" role="list">
             <div class="ts-nav-collapse-inner">
                 <div class="ts-nav-item" role="listitem">
-                    <a href="<?= base_url('/users') ?>"
-                        class="ts-nav-link <?= $segment === 'users' ? 'active' : '' ?>"
-                        data-label="User Accounts">
+                    <span class="ts-nav-link is-disabled"
+                        role="link"
+                        aria-disabled="true"
+                        data-label="User Accounts (Coming soon)">
                         <span class="nav-icon"><?= svg_icon('users', '', '18') ?></span>
                         <span class="nav-label">User Accounts</span>
-                    </a>
+                        <span class="nav-status">Soon</span>
+                    </span>
                 </div>
                 <div class="ts-nav-item" role="listitem">
-                    <a href="<?= base_url('/settings') ?>"
-                        class="ts-nav-link <?= $segment === 'settings' ? 'active' : '' ?>"
-                        data-label="Settings">
+                    <span class="ts-nav-link is-disabled"
+                        role="link"
+                        aria-disabled="true"
+                        data-label="Settings (Coming soon)">
                         <span class="nav-icon"><?= svg_icon('settings', '', '18') ?></span>
                         <span class="nav-label">Settings</span>
-                    </a>
+                        <span class="nav-status">Soon</span>
+                    </span>
                 </div>
             </div>
         </div>

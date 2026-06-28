@@ -85,7 +85,7 @@ $statusColor = [
                         ? date('F d, Y', strtotime($project['end_date'])) : '—',
                     'Contract Amount' => $project['contract_amount']
                         ? '₱ ' . number_format($project['contract_amount'], 2) : '—',
-                    'Total Workers'   => count($assignments),
+                    'Total Workers'   => $workerCount,
                 ];
                 foreach ($details as $label => $value): ?>
                     <dt class="col-5 text-muted-sm py-1 border-bottom border-light">
@@ -211,13 +211,13 @@ $statusColor = [
                 <h6 class="ts-card-title">
                     <?= svg_icon('employees', 'text-primary-ts', '15') ?>
                     Assigned Employees
-                    <span class="ts-badge gray ms-1"><?= count($assignments) ?></span>
+                    <span class="ts-badge gray ms-1"><?= (int) $workerCount ?></span>
                 </h6>
             </div>
-            <?php if (empty($assignments)): ?>
+            <?php if ($workerCount === 0): ?>
                 <div class="ts-empty">
                     <?= svg_icon('employees', '', '36') ?>
-                    <p>No employees assigned to this project.</p>
+                    <p>No workers assigned to this project.</p>
                 </div>
             <?php else: ?>
                 <div class="ts-table-wrap" style="border:none;">
@@ -232,7 +232,8 @@ $statusColor = [
                         </thead>
                         <tbody>
                             <?php foreach ($assignments as $a): ?>
-                                <tr <?= $a['is_site_engineer'] ? 'style="background:var(--ts-primary-light);"' : '' ?>>
+                                <?php if ($a['is_site_engineer']) continue; ?>
+                                <tr>
                                     <td>
                                         <div class="d-flex align-items-center gap-2">
                                             <?php if ($a['photo']): ?>
@@ -257,13 +258,9 @@ $statusColor = [
                                         <?= esc($a['position_title'] ?? '—') ?>
                                     </td>
                                     <td>
-                                        <?php if ($a['is_site_engineer']): ?>
-                                            <span class="ts-badge primary">Site Engineer</span>
-                                        <?php else: ?>
-                                            <span class="text-muted-sm">
-                                                <?= esc($a['role'] ?: 'Worker') ?>
-                                            </span>
-                                        <?php endif; ?>
+                                        <span class="text-muted-sm">
+                                            <?= esc($a['role'] ?: 'Worker') ?>
+                                        </span>
                                     </td>
                                     <td class="d-none d-md-table-cell text-muted-sm tabular-nums">
                                         <?= $a['date_assigned']

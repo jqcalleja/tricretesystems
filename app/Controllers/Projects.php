@@ -163,14 +163,16 @@ class Projects extends BaseController
         }
 
         $assignments     = $this->assignmentModel->getByProject($id);
-        $assignedIds     = array_column($assignments, 'employee_id');
+        $assignedIds     = [];
         $siteEngineerId  = null;
 
         foreach ($assignments as $a) {
             if ($a['is_site_engineer']) {
-                $siteEngineerId = $a['employee_id'];
-                break;
+                $siteEngineerId = (int) $a['employee_id'];
+                continue;
             }
+
+            $assignedIds[] = (int) $a['employee_id'];
         }
 
         return view('projects/edit', [
@@ -247,6 +249,17 @@ class Projects extends BaseController
         // Deactivate all current assignments
         $this->assignmentModel->deactivateAll($projectId);
 
+        $siteEngineerId = (int) ($siteEngineerId ?: 0);
+        $employeeIds = array_map('intval', $employeeIds);
+        $employeeIds = array_values(array_unique(array_filter(
+            $employeeIds,
+            fn($empId) => $empId > 0 && $empId !== $siteEngineerId
+        )));
+
+        if ($siteEngineerId) {
+            array_unshift($employeeIds, $siteEngineerId);
+        }
+
         if (empty($employeeIds)) return;
 
         $today = date('Y-m-d');
@@ -255,7 +268,7 @@ class Projects extends BaseController
             $empId = (int) $empId;
             if (! $empId) continue;
 
-            $isSiteEngineer = ($siteEngineerId && (int) $siteEngineerId === $empId) ? 1 : 0;
+            $isSiteEngineer = ($siteEngineerId === $empId) ? 1 : 0;
 
             // Check if a deactivated assignment exists — reactivate if so
             $existing = $this->assignmentModel

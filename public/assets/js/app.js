@@ -88,58 +88,59 @@ document.addEventListener('DOMContentLoaded', function () {
     // ----------------------------------------------------------
     // 5. SweetAlert2 confirmation (delete, deactivate, activate, generic)
     // ----------------------------------------------------------
-    document.querySelectorAll('[data-confirm-delete]').forEach(function (btn) {
-        btn.addEventListener('click', function (e) {
-            e.preventDefault();
-            const target = btn.getAttribute('data-confirm-delete') || btn.getAttribute('href');
-            const label = btn.getAttribute('data-label') || 'this record';
-            const type = btn.getAttribute('data-confirm-type') || 'delete';
+    document.addEventListener('click', function (e) {
+        const btn = e.target.closest('[data-confirm-delete]');
+        if (!btn) return;
 
-            const presets = {
-                delete: {
-                    title: 'Delete ' + label + '?',
-                    text: 'This action cannot be undone.',
-                    icon: 'warning',
-                    confirmButtonColor: '#DC2626',
-                    confirmButtonText: 'Yes, delete it',
-                },
-                deactivate: {
-                    title: 'Deactivate ' + label + '?',
-                    text: 'They will be marked as inactive and hidden from active lists.',
-                    icon: 'warning',
-                    confirmButtonColor: '#DC2626',
-                    confirmButtonText: 'Yes, deactivate',
-                },
-                activate: {
-                    title: 'Activate ' + label + '?',
-                    text: 'They will be marked as active again.',
-                    icon: 'question',
-                    confirmButtonColor: '#EE2B2B',
-                    confirmButtonText: 'Yes, activate',
-                },
-                generic: {
-                    title: label + '?',
-                    text: 'Please confirm this action.',
-                    icon: 'question',
-                    confirmButtonColor: '#EE2B2B',
-                    confirmButtonText: 'Yes, continue',
-                },
-            };
+        e.preventDefault();
+        const target = btn.getAttribute('data-confirm-delete') || btn.getAttribute('href');
+        const label = btn.getAttribute('data-label') || 'this record';
+        const type = btn.getAttribute('data-confirm-type') || 'delete';
 
-            const preset = presets[type] || presets.generic;
+        const presets = {
+            delete: {
+                title: 'Delete ' + label + '?',
+                text: 'This action cannot be undone.',
+                icon: 'warning',
+                confirmButtonColor: '#DC2626',
+                confirmButtonText: 'Yes, delete it',
+            },
+            deactivate: {
+                title: 'Deactivate ' + label + '?',
+                text: 'They will be marked as inactive and hidden from active lists.',
+                icon: 'warning',
+                confirmButtonColor: '#DC2626',
+                confirmButtonText: 'Yes, deactivate',
+            },
+            activate: {
+                title: 'Activate ' + label + '?',
+                text: 'They will be marked as active again.',
+                icon: 'question',
+                confirmButtonColor: '#EE2B2B',
+                confirmButtonText: 'Yes, activate',
+            },
+            generic: {
+                title: label + '?',
+                text: 'Please confirm this action.',
+                icon: 'question',
+                confirmButtonColor: '#EE2B2B',
+                confirmButtonText: 'Yes, continue',
+            },
+        };
 
-            Swal.fire({
-                title: preset.title,
-                text: preset.text,
-                icon: preset.icon,
-                showCancelButton: true,
-                confirmButtonColor: preset.confirmButtonColor,
-                cancelButtonColor: '#6B7280',
-                confirmButtonText: preset.confirmButtonText,
-                cancelButtonText: 'Cancel',
-            }).then(function (result) {
-                if (result.isConfirmed) window.location.href = target;
-            });
+        const preset = presets[type] || presets.generic;
+
+        Swal.fire({
+            title: preset.title,
+            text: preset.text,
+            icon: preset.icon,
+            showCancelButton: true,
+            confirmButtonColor: preset.confirmButtonColor,
+            cancelButtonColor: '#6B7280',
+            confirmButtonText: preset.confirmButtonText,
+            cancelButtonText: 'Cancel',
+        }).then(function (result) {
+            if (result.isConfirmed) window.location.href = target;
         });
     });
 

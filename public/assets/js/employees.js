@@ -2,10 +2,6 @@
  * Tricrete Systems — Employees JS
  */
 
-// ============================================================
-// OUTSIDE DOMContentLoaded — globally accessible functions
-// ============================================================
-
 // ----------------------------------------------------------
 // Tab restore from URL hash — runs immediately on script parse
 // ----------------------------------------------------------
