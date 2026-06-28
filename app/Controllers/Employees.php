@@ -91,6 +91,24 @@ class Employees extends BaseController
         }
     }
 
+    /**
+     * Ensure the chosen position belongs to the chosen department.
+     */
+    private function positionMatchesDepartment($positionId, $departmentId): bool
+    {
+        if (! $positionId) {
+            return true;
+        }
+
+        if (! $departmentId) {
+            return false;
+        }
+
+        $position = $this->positionModel->find((int) $positionId);
+
+        return $position && (int) $position['department_id'] === (int) $departmentId;
+    }
+
     // ============================================================
     // LIST
     // ============================================================
@@ -199,6 +217,14 @@ class Employees extends BaseController
         $data['department_id']   = ($data['department_id']   ?? '') ?: null;
         $data['contract_expiry'] = ($data['contract_expiry'] ?? '') ?: null;
         $data['date_resigned']   = ($data['date_resigned']   ?? '') ?: null;
+
+        if (! $this->positionMatchesDepartment($data['position_id'], $data['department_id'])) {
+            return redirect()->back()
+                ->withInput()
+                ->with('errors', [
+                    'position_id' => 'Selected position does not belong to the selected department.',
+                ]);
+        }
 
         // Handle photo upload
         $photo = $this->request->getFile('photo');
@@ -356,6 +382,14 @@ class Employees extends BaseController
         $data['department_id']   = ($data['department_id']   ?? '') ?: null;
         $data['contract_expiry'] = ($data['contract_expiry'] ?? '') ?: null;
         $data['date_resigned']   = ($data['date_resigned']   ?? '') ?: null;
+
+        if (! $this->positionMatchesDepartment($data['position_id'], $data['department_id'])) {
+            return redirect()->back()
+                ->withInput()
+                ->with('errors', [
+                    'position_id' => 'Selected position does not belong to the selected department.',
+                ]);
+        }
 
         // Handle photo upload
         $photo = $this->request->getFile('photo');

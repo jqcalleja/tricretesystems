@@ -146,10 +146,9 @@ $segment = $uri->getSegment(1) ?? '';
     </div>
 
     <!-- System -->
-    <div class="ts-nav-group ts-nav-group-disabled">
+    <div class="ts-nav-group">
         <button type="button" class="ts-nav-label ts-nav-label-toggle" data-target="navGroupSystem">
             <span>System</span>
-            <span class="ts-nav-group-status">Soon</span>
             <span class="ts-nav-label-chevron"><?= svg_icon('chevron-down', '', '12') ?></span>
         </button>
         <div class="ts-nav" id="navGroupSystem" role="list">
@@ -165,14 +164,12 @@ $segment = $uri->getSegment(1) ?? '';
                     </span>
                 </div>
                 <div class="ts-nav-item" role="listitem">
-                    <span class="ts-nav-link is-disabled"
-                        role="link"
-                        aria-disabled="true"
-                        data-label="Settings (Coming soon)">
+                    <a href="<?= base_url('/settings') ?>"
+                        class="ts-nav-link <?= $segment === 'settings' ? 'active' : '' ?>"
+                        data-label="Settings">
                         <span class="nav-icon"><?= svg_icon('settings', '', '18') ?></span>
                         <span class="nav-label">Settings</span>
-                        <span class="nav-status">Soon</span>
-                    </span>
+                    </a>
                 </div>
             </div>
         </div>

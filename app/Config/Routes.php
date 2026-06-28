@@ -62,3 +62,16 @@ $routes->post('/projects/store',             'Projects::store');
 $routes->get('/projects/view/(:num)',        'Projects::view/$1');
 $routes->get('/projects/edit/(:num)',        'Projects::edit/$1');
 $routes->post('/projects/update/(:num)',     'Projects::update/$1');
+
+// Settings Module
+$routes->get('/settings',                              'Settings::index');
+$routes->get('/settings/departments',                  'Settings::departments');
+$routes->post('/settings/departments/store',           'Settings::storeDepartment');
+$routes->get('/settings/departments/edit/(:num)',      'Settings::departments/$1');
+$routes->post('/settings/departments/update/(:num)',   'Settings::updateDepartment/$1');
+$routes->get('/settings/departments/delete/(:num)',    'Settings::deleteDepartment/$1');
+$routes->get('/settings/positions',                    'Settings::positions');
+$routes->post('/settings/positions/store',             'Settings::storePosition');
+$routes->get('/settings/positions/edit/(:num)',        'Settings::positions/$1');
+$routes->post('/settings/positions/update/(:num)',     'Settings::updatePosition/$1');
+$routes->get('/settings/positions/delete/(:num)',      'Settings::deletePosition/$1');

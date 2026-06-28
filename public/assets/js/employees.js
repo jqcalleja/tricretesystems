@@ -398,7 +398,60 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // ----------------------------------------------------------
-    // 3. Flatpickr on all date fields
+    // 3. Filter positions by selected department
+    // ----------------------------------------------------------
+    const departmentSelect = document.getElementById('departmentSelect');
+    const positionSelect = document.getElementById('positionSelect');
+
+    function filterPositionsByDepartment() {
+        if (!departmentSelect || !positionSelect) return;
+
+        const selectedDepartmentId = departmentSelect.value;
+        const selectedOption = positionSelect.options[positionSelect.selectedIndex];
+
+        if (!selectedDepartmentId && selectedOption && selectedOption.dataset.departmentId) {
+            departmentSelect.value = selectedOption.dataset.departmentId;
+        }
+
+        const activeDepartmentId = departmentSelect.value;
+        const currentPositionId = positionSelect.value;
+        let currentPositionVisible = currentPositionId === '';
+        let hasMatchingPositions = false;
+
+        Array.from(positionSelect.options).forEach(function (option) {
+            if (!option.value) {
+                option.hidden = false;
+                option.disabled = false;
+                return;
+            }
+
+            const matchesDepartment = option.dataset.departmentId === activeDepartmentId;
+            option.hidden = !matchesDepartment;
+            option.disabled = !matchesDepartment;
+
+            if (matchesDepartment) {
+                hasMatchingPositions = true;
+            }
+
+            if (option.value === currentPositionId && matchesDepartment) {
+                currentPositionVisible = true;
+            }
+        });
+
+        positionSelect.disabled = !activeDepartmentId || !hasMatchingPositions;
+
+        if (!activeDepartmentId || !currentPositionVisible) {
+            positionSelect.value = '';
+        }
+    }
+
+    if (departmentSelect && positionSelect) {
+        departmentSelect.addEventListener('change', filterPositionsByDepartment);
+        filterPositionsByDepartment();
+    }
+
+    // ----------------------------------------------------------
+    // 4. Flatpickr on all date fields
     // ----------------------------------------------------------
     document.querySelectorAll('.flatpickr').forEach(function (el) {
         flatpickr(el, { dateFormat: 'Y-m-d', allowInput: true });

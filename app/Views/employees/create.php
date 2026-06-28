@@ -61,25 +61,26 @@
                     value="<?= esc(old('date_hired')) ?>" placeholder="YYYY-MM-DD" required>
             </div>
             <div class="col-12 col-md-4 col-lg-3">
-                <label class="ts-form-label">Position</label>
-                <select name="position_id" class="form-select form-select-sm">
-                    <option value="">— Select Position —</option>
-                    <?php foreach ($positions as $pos): ?>
-                        <option value="<?= $pos['id'] ?>"
-                            <?= old('position_id') == $pos['id'] ? 'selected' : '' ?>>
-                            <?= esc($pos['title']) ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-            <div class="col-12 col-md-4 col-lg-3">
                 <label class="ts-form-label">Department</label>
-                <select name="department_id" class="form-select form-select-sm">
+                <select name="department_id" id="departmentSelect" class="form-select form-select-sm">
                     <option value="">— Select Department —</option>
                     <?php foreach ($departments as $dept): ?>
                         <option value="<?= $dept['id'] ?>"
                             <?= old('department_id') == $dept['id'] ? 'selected' : '' ?>>
                             <?= esc($dept['name']) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div class="col-12 col-md-4 col-lg-3">
+                <label class="ts-form-label">Position</label>
+                <select name="position_id" id="positionSelect" class="form-select form-select-sm">
+                    <option value="">— Select Position —</option>
+                    <?php foreach ($positions as $pos): ?>
+                        <option value="<?= $pos['id'] ?>"
+                            data-department-id="<?= esc($pos['department_id'] ?? '', 'attr') ?>"
+                            <?= old('position_id') == $pos['id'] ? 'selected' : '' ?>>
+                            <?= esc($pos['title']) ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
